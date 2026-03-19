@@ -174,7 +174,7 @@ ${JSON.stringify(currentContent, null, 2)}
 IMPORTANT RULES:
 - Always call get_current_content first before making any changes, to ensure you have the latest state.
 - When updating content, modify only the fields the user asks about and keep everything else the same.
-- After making changes, confirm what you changed in a clear, friendly way.
+- After making changes, always report the githubStatus from the tool result. If it says "success", tell the user the change is saved permanently. If it contains "warning", tell the user exactly what the warning says so they can fix it.
 - If the user asks to undo or go back, use list_snapshots and restore_snapshot.
 - If the user asks something you can't do with the available tools, let them know politely.
 - Keep responses concise and helpful.
