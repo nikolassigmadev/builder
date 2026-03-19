@@ -42,6 +42,10 @@ const DEFAULT_CONTENT: SiteContent = {
 
 function getContent(): SiteContent {
   try {
+    const tmpPath = "/tmp/content/current.json";
+    if (fs.existsSync(tmpPath)) {
+      return JSON.parse(fs.readFileSync(tmpPath, "utf-8"));
+    }
     const filePath = path.join(process.cwd(), "content", "current.json");
     return JSON.parse(fs.readFileSync(filePath, "utf-8"));
   } catch {
