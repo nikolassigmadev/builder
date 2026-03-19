@@ -42,46 +42,61 @@ const PreviewPanel = forwardRef<PreviewPanelRef, PreviewPanelProps>(
         : { width: viewport === "mobile" ? 375 : 768, maxWidth: "100%" };
 
     return (
-      <div className={`flex flex-col bg-[#111111] ${className}`}>
+      <div className={`flex flex-col bg-[#0a0a0a] ${className}`}>
         {/* Preview header */}
-        <div className="h-12 flex items-center justify-between px-3 border-b border-[#1d355760] flex-shrink-0 gap-2">
+        <div className="h-12 flex items-center justify-between px-3 border-b border-[#27272a] flex-shrink-0 gap-2">
           {/* Status badge */}
-          <div className="flex items-center gap-1.5 flex-shrink-0">
+          <div className="flex items-center gap-2 flex-shrink-0">
             <div
               className={`w-2 h-2 rounded-full flex-shrink-0 ${
                 status === "live"
-                  ? "bg-green-500"
+                  ? "bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]"
                   : status === "pending"
                   ? "bg-amber-400 animate-pulse"
                   : "bg-[#e63946] animate-pulse"
               }`}
             />
-            <span className="text-xs text-[#f1faee]/60 whitespace-nowrap">
-              {status === "live" ? "Live" : status === "pending" ? "Refreshing..." : "Loading..."}
+            <span className="text-xs font-medium text-zinc-500">
+              {status === "live" ? "Live Preview" : status === "pending" ? "Updating..." : "Loading..."}
             </span>
           </div>
 
           {/* URL bar */}
-          <div className="hidden md:flex items-center px-2 py-1 rounded bg-[#0a0a0a] border border-[#1d355760] font-mono text-xs text-[#f1faee]/40 flex-1 min-w-0 mx-2">
+          <div className="hidden md:flex items-center px-3 py-1 rounded-lg bg-[#18181b] border border-[#27272a] font-mono text-[11px] text-zinc-500 flex-1 min-w-0 mx-3">
+            <svg className="w-3 h-3 mr-1.5 text-zinc-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
             <span className="truncate">localhost:3000</span>
           </div>
 
           {/* Controls */}
           <div className="flex items-center gap-1 flex-shrink-0">
             {/* Viewport toggles */}
-            <div className="hidden lg:flex items-center border border-[#1d355760] rounded overflow-hidden mr-1">
+            <div className="hidden lg:flex items-center bg-[#18181b] border border-[#27272a] rounded-lg overflow-hidden mr-1">
               {(["mobile", "tablet", "desktop"] as ViewportSize[]).map((v) => (
                 <button
                   key={v}
                   onClick={() => setViewport(v)}
                   title={v.charAt(0).toUpperCase() + v.slice(1)}
-                  className={`px-2 py-1 text-xs transition-colors ${
+                  className={`px-2.5 py-1.5 text-xs transition-all ${
                     viewport === v
                       ? "bg-[#e63946] text-white"
-                      : "text-[#f1faee]/40 hover:text-[#f1faee]/80 hover:bg-[#1d3557]"
+                      : "text-zinc-500 hover:text-white"
                   }`}
                 >
-                  {v === "mobile" ? "📱" : v === "tablet" ? "⬜" : "🖥️"}
+                  {v === "mobile" ? (
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                  ) : v === "tablet" ? (
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 18h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                    </svg>
+                  ) : (
+                    <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                  )}
                 </button>
               ))}
             </div>
@@ -91,7 +106,7 @@ const PreviewPanel = forwardRef<PreviewPanelRef, PreviewPanelProps>(
               onClick={handleRefresh}
               disabled={isRefreshing}
               title="Refresh preview"
-              className="p-1.5 rounded text-[#f1faee]/60 hover:text-[#f1faee] hover:bg-[#1d3557] disabled:opacity-30 transition-all"
+              className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-[#18181b] disabled:opacity-30 transition-all"
             >
               <svg
                 className={`w-4 h-4 ${isRefreshing ? "animate-spin" : ""}`}
@@ -112,7 +127,7 @@ const PreviewPanel = forwardRef<PreviewPanelRef, PreviewPanelProps>(
             <button
               onClick={() => window.open("/", "_blank")}
               title="Open in new tab"
-              className="p-1.5 rounded text-[#f1faee]/60 hover:text-[#f1faee] hover:bg-[#1d3557] transition-all"
+              className="p-1.5 rounded-lg text-zinc-500 hover:text-white hover:bg-[#18181b] transition-all"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                 <path
@@ -126,7 +141,7 @@ const PreviewPanel = forwardRef<PreviewPanelRef, PreviewPanelProps>(
         </div>
 
         {/* iframe */}
-        <div className="flex-1 overflow-auto flex justify-center bg-[#0d0d0d]">
+        <div className="flex-1 overflow-auto flex justify-center bg-[#0a0a0a]">
           <iframe
             ref={iframeRef}
             src="/"

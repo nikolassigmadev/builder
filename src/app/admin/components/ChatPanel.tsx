@@ -20,7 +20,7 @@ const QUICK_CHIPS = [
 const INITIAL_MESSAGE: Message = {
   role: "assistant",
   content:
-    "Hey! I'm your site editor. Tell me what you'd like to change on your website. For example:\n\n- \"Change the headline to Summer Special\"\n- \"Update the phone number to (212) 555-9999\"\n- \"Add a new class called Spin Cycle\"\n- \"Change the primary color to blue\"\n- \"Show me what the site looked like earlier today\"\n- \"Undo the last change\"",
+    "Hey! I'm your site editor. Tell me what you'd like to change — I'll update the site and you'll see it live in the preview.\n\nTry things like:\n- \"Change the headline to Summer Special\"\n- \"Update the phone number\"\n- \"Add a new class called Spin Cycle\"\n- \"Change the primary color to blue\"",
   timestamp: new Date(),
 };
 
@@ -113,7 +113,7 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
   const charCount = input.length;
 
   return (
-    <div className={`flex flex-col bg-[#0a0a0a] ${className}`} style={style}>
+    <div className={`flex flex-col bg-[#09090b] ${className}`} style={style}>
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, i) => (
@@ -121,26 +121,48 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
             key={i}
             className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
           >
-            <div
-              title={msg.timestamp.toLocaleTimeString([], {
-                hour: "2-digit",
-                minute: "2-digit",
-              })}
-              className={`max-w-[85%] p-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                msg.role === "user"
-                  ? "bg-[#e63946] text-white rounded-2xl rounded-br-sm"
-                  : "bg-[#1d3557] text-[#f1faee] rounded-2xl rounded-bl-sm"
-              }`}
-            >
-              {msg.content}
+            <div className={`flex items-start gap-2 max-w-[88%] ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+              {/* Avatar */}
+              <div
+                className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 ${
+                  msg.role === "user"
+                    ? "bg-[#e63946] text-white"
+                    : "bg-[#27272a] text-zinc-400"
+                }`}
+              >
+                {msg.role === "user" ? "U" : "AI"}
+              </div>
+              <div
+                title={msg.timestamp.toLocaleTimeString([], {
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+                className={`p-3 text-sm leading-relaxed whitespace-pre-wrap ${
+                  msg.role === "user"
+                    ? "bg-[#e63946] text-white rounded-2xl rounded-tr-lg"
+                    : "bg-[#18181b] text-zinc-300 rounded-2xl rounded-tl-lg border border-[#27272a]"
+                }`}
+              >
+                {msg.content}
+              </div>
             </div>
           </div>
         ))}
 
         {loading && (
           <div className="flex justify-start">
-            <div className="bg-[#1d3557] text-[#f1faee] p-3 rounded-2xl rounded-bl-sm text-sm">
-              <span className="animate-pulse">Thinking...</span>
+            <div className="flex items-start gap-2">
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold bg-[#27272a] text-zinc-400 flex-shrink-0 mt-0.5">
+                AI
+              </div>
+              <div className="bg-[#18181b] border border-[#27272a] text-zinc-400 p-3 rounded-2xl rounded-tl-lg text-sm flex items-center gap-2">
+                <div className="flex gap-1">
+                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-bounce" style={{ animationDelay: "0ms" }} />
+                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-bounce" style={{ animationDelay: "150ms" }} />
+                  <div className="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-bounce" style={{ animationDelay: "300ms" }} />
+                </div>
+                <span>Updating site...</span>
+              </div>
             </div>
           </div>
         )}
@@ -149,12 +171,12 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
 
       {/* Quick action chips */}
       {messages.length <= 2 && !loading && (
-        <div className="px-4 pb-3 flex flex-wrap gap-2">
+        <div className="px-4 pb-3 flex flex-wrap gap-1.5">
           {QUICK_CHIPS.map((chip) => (
             <button
               key={chip}
               onClick={() => useChip(chip)}
-              className="text-xs px-3 py-1.5 rounded-full border border-[#1d3557] text-[#f1faee]/60 hover:text-[#e63946] hover:border-[#e63946] transition-all"
+              className="text-xs px-3 py-1.5 rounded-full bg-[#18181b] border border-[#27272a] text-zinc-400 hover:text-white hover:border-[#e63946]/50 hover:bg-[#e63946]/10 transition-all"
             >
               {chip}
             </button>
@@ -165,7 +187,7 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
       {/* Input */}
       <form
         onSubmit={handleSend}
-        className="p-3 border-t border-[#1d355760] flex gap-2 items-end"
+        className="p-3 border-t border-[#27272a] flex gap-2 items-end bg-[#09090b]"
       >
         <div className="flex-1 relative">
           <textarea
@@ -176,16 +198,16 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
               autoResize();
             }}
             onKeyDown={handleKeyDown}
-            placeholder="Tell me what to change... (Enter to send, Shift+Enter for new line)"
+            placeholder="Describe your changes..."
             rows={1}
             disabled={loading}
-            className="w-full p-3 pr-12 rounded-xl bg-[#1d3557] text-white border border-[#e6394633] focus:outline-none focus:border-[#e63946] resize-none overflow-y-auto text-sm placeholder-[#f1faee]/30 disabled:opacity-50 transition-colors"
+            className="w-full p-3 pr-12 rounded-xl bg-[#18181b] text-white border border-[#27272a] focus:outline-none focus:border-[#e63946] focus:ring-1 focus:ring-[#e63946]/20 resize-none overflow-y-auto text-sm placeholder-zinc-600 disabled:opacity-50 transition-all"
             style={{ maxHeight: "120px" }}
           />
           {charCount > 0 && (
             <span
-              className={`absolute bottom-2.5 right-2.5 text-xs pointer-events-none ${
-                charCount > 400 ? "text-[#e63946]" : "text-[#f1faee]/30"
+              className={`absolute bottom-2.5 right-2.5 text-[10px] pointer-events-none ${
+                charCount > 400 ? "text-[#e63946]" : "text-zinc-600"
               }`}
             >
               {charCount}
@@ -195,9 +217,11 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
         <button
           type="submit"
           disabled={loading || !input.trim()}
-          className="px-4 py-3 rounded-xl bg-[#e63946] text-white font-bold hover:opacity-90 transition-opacity disabled:opacity-40 text-sm self-end flex-shrink-0"
+          className="p-3 rounded-xl bg-[#e63946] text-white hover:bg-[#d42f3c] transition-colors disabled:opacity-30 disabled:hover:bg-[#e63946] flex-shrink-0"
         >
-          Send
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+          </svg>
         </button>
       </form>
     </div>
