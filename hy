@@ -1,4 +1,4 @@
-git add . && git commit -m "your message" && git push
+git add . && git commit -m "your message" && git pull --rebase && git push
 v
 j
 
