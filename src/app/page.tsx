@@ -42,12 +42,18 @@ const DEFAULT_CONTENT: SiteContent = {
 
 function getContent(): SiteContent {
   try {
+    const projectPath = path.join(process.cwd(), "content", "current.json");
     const tmpPath = "/tmp/content/current.json";
-    if (fs.existsSync(tmpPath)) {
-      return JSON.parse(fs.readFileSync(tmpPath, "utf-8"));
+    // Prefer project path (writable on localhost), fall back to /tmp (read-only hosts)
+    try {
+      fs.accessSync(path.dirname(projectPath), fs.constants.W_OK);
+      return JSON.parse(fs.readFileSync(projectPath, "utf-8"));
+    } catch {
+      if (fs.existsSync(tmpPath)) {
+        return JSON.parse(fs.readFileSync(tmpPath, "utf-8"));
+      }
+      return JSON.parse(fs.readFileSync(projectPath, "utf-8"));
     }
-    const filePath = path.join(process.cwd(), "content", "current.json");
-    return JSON.parse(fs.readFileSync(filePath, "utf-8"));
   } catch {
     return DEFAULT_CONTENT;
   }
