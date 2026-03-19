@@ -1,4 +1,4 @@
-import Anthropic from "@anthropic-ai/sdk";
+import OpenAI from "openai";
 import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
@@ -131,47 +131,59 @@ function restoreSnapshot(filename: string) {
   return true;
 }
 
-const tools: Anthropic.Tool[] = [
+const tools: OpenAI.Chat.ChatCompletionTool[] = [
   {
-    name: "get_current_content",
-    description:
-      "Get the current website content as JSON. Use this to see what the site currently looks like before making changes.",
-    input_schema: { type: "object" as const, properties: {}, required: [] },
-  },
-  {
-    name: "update_content",
-    description:
-      "Update website content. Provide the full updated content JSON. You must first call get_current_content, then modify the fields the user wants changed, then pass the full updated object here.",
-    input_schema: {
-      type: "object" as const,
-      properties: {
-        content: {
-          type: "object" as const,
-          description: "The full updated content JSON object",
-        },
-      },
-      required: ["content"],
+    type: "function",
+    function: {
+      name: "get_current_content",
+      description:
+        "Get the current website content as JSON. Use this to see what the site currently looks like before making changes.",
+      parameters: { type: "object", properties: {}, required: [] },
     },
   },
   {
-    name: "list_snapshots",
-    description:
-      "List all saved snapshots/versions of the website. Each snapshot is a previous state that can be restored.",
-    input_schema: { type: "object" as const, properties: {}, required: [] },
+    type: "function",
+    function: {
+      name: "update_content",
+      description:
+        "Update website content. Provide the full updated content JSON. You must first call get_current_content, then modify the fields the user wants changed, then pass the full updated object here.",
+      parameters: {
+        type: "object",
+        properties: {
+          content: {
+            type: "object",
+            description: "The full updated content JSON object",
+          },
+        },
+        required: ["content"],
+      },
+    },
   },
   {
-    name: "restore_snapshot",
-    description:
-      "Restore the website to a previous snapshot. Use list_snapshots first to find the right one.",
-    input_schema: {
-      type: "object" as const,
-      properties: {
-        filename: {
-          type: "string" as const,
-          description: "The snapshot filename to restore (e.g., '2026-03-19T14-00-00-000Z.json')",
+    type: "function",
+    function: {
+      name: "list_snapshots",
+      description:
+        "List all saved snapshots/versions of the website. Each snapshot is a previous state that can be restored.",
+      parameters: { type: "object", properties: {}, required: [] },
+    },
+  },
+  {
+    type: "function",
+    function: {
+      name: "restore_snapshot",
+      description:
+        "Restore the website to a previous snapshot. Use list_snapshots first to find the right one.",
+      parameters: {
+        type: "object",
+        properties: {
+          filename: {
+            type: "string",
+            description: "The snapshot filename to restore (e.g., '2026-03-19T14-00-00-000Z.json')",
+          },
         },
+        required: ["filename"],
       },
-      required: ["filename"],
     },
   },
 ];
@@ -179,11 +191,11 @@ const tools: Anthropic.Tool[] = [
 export async function POST(req: Request) {
   const { messages } = await req.json();
 
-  const apiKey = process.env.CLAUDE_API_KEY;
+  const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
-    return NextResponse.json({ response: "API key not configured. Check .env.local" }, { status: 500 });
+    return NextResponse.json({ response: "OpenAI API key not configured. Add OPENAI_API_KEY to .env.local" }, { status: 500 });
   }
-  const client = new Anthropic({ apiKey });
+  const client = new OpenAI({ apiKey });
 
   let currentContent: Record<string, unknown>;
   try {
@@ -207,37 +219,39 @@ IMPORTANT RULES:
 - The site colors can be changed via the "colors" object (primary, secondary, accent, background, text).
 - Classes, pricing plans, and testimonials are arrays that can be added to, removed from, or modified.`;
 
-  const apiMessages = messages.map((m: { role: string; content: string }) => ({
-    role: m.role,
-    content: m.content,
-  }));
+  const apiMessages: OpenAI.Chat.ChatCompletionMessageParam[] = [
+    { role: "system", content: systemPrompt },
+    ...messages.map((m: { role: string; content: string }) => ({
+      role: m.role as "user" | "assistant",
+      content: m.content,
+    })),
+  ];
 
   try {
-    let response = await client.messages.create({
-      model: "claude-sonnet-4-6",
+    let response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
       max_tokens: 4096,
-      system: systemPrompt,
       tools,
       messages: apiMessages,
     });
 
-    // Handle tool use loop
-    while (response.stop_reason === "tool_use") {
-      const toolUseBlocks = response.content.filter(
-        (b): b is Anthropic.ToolUseBlock => b.type === "tool_use"
-      );
+    // Handle tool call loop
+    while (response.choices[0].finish_reason === "tool_calls") {
+      const assistantMessage = response.choices[0].message;
+      const toolCalls = assistantMessage.tool_calls ?? [];
 
-      const toolResults: Anthropic.ToolResultBlockParam[] = [];
-      for (const toolUse of toolUseBlocks) {
+      const toolResults: OpenAI.Chat.ChatCompletionToolMessageParam[] = [];
+      for (const toolCall of toolCalls) {
+        if (toolCall.type !== "function") continue;
+        const args = JSON.parse(toolCall.function.arguments);
         let result: string;
 
-        switch (toolUse.name) {
+        switch (toolCall.function.name) {
           case "get_current_content":
             result = JSON.stringify(getContent());
             break;
           case "update_content": {
-            const input = toolUse.input as { content: Record<string, unknown> };
-            const githubStatus = await saveContent(input.content);
+            const githubStatus = await saveContent(args.content);
             result = JSON.stringify({ success: true, message: "Content updated successfully", githubStatus });
             break;
           }
@@ -245,8 +259,7 @@ IMPORTANT RULES:
             result = JSON.stringify(getSnapshots());
             break;
           case "restore_snapshot": {
-            const snapInput = toolUse.input as { filename: string };
-            const success = restoreSnapshot(snapInput.filename);
+            const success = restoreSnapshot(args.filename);
             result = JSON.stringify({
               success,
               message: success ? "Snapshot restored successfully" : "Snapshot not found",
@@ -258,38 +271,34 @@ IMPORTANT RULES:
         }
 
         toolResults.push({
-          type: "tool_result" as const,
-          tool_use_id: toolUse.id,
+          role: "tool",
+          tool_call_id: toolCall.id,
           content: result,
         });
       }
 
-      response = await client.messages.create({
-        model: "claude-sonnet-4-6",
+      response = await client.chat.completions.create({
+        model: "gpt-4o-mini",
         max_tokens: 4096,
-        system: systemPrompt,
         tools,
         messages: [
           ...apiMessages,
-          { role: "assistant" as const, content: response.content },
-          { role: "user" as const, content: toolResults },
+          assistantMessage,
+          ...toolResults,
         ],
       });
     }
 
-    // Extract text response
-    const textBlock = response.content.find(
-      (b): b is Anthropic.TextBlock => b.type === "text"
-    );
+    const text = response.choices[0].message.content;
 
     return NextResponse.json({
-      response: textBlock?.text || "Done! Refresh the site to see your changes.",
+      response: text || "Done! Refresh the site to see your changes.",
     });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    if (errorMessage.includes("credit balance")) {
+    if (errorMessage.includes("insufficient_quota") || errorMessage.includes("billing")) {
       return NextResponse.json({
-        response: "⚠️ Your Anthropic API account needs more credits. Please visit console.anthropic.com to add credits, then try again.",
+        response: "⚠️ Your OpenAI API account needs more credits. Please visit platform.openai.com to add credits, then try again.",
       });
     }
     return NextResponse.json({
