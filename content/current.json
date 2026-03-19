@@ -3,7 +3,7 @@
   "hero": {
     "headline": "GYM",
     "subheadline": "New York's Premier Fitness Destination",
-    "ctaText": "<span style='font-size: 2em; color: green;'>Start Your Free Trial</span>",
+    "ctaText": "<span style='font-size: 2.5em; color: green; font-weight: bold;'>Start Your Free Trial</span>",
     "ctaLink": "#contact"
   },
   "about": {
@@ -90,7 +90,7 @@
       },
       {
         "name": "Annual",
-        "price": "$69",
+        "price": "69",
         "period": "per month",
         "features": [
           "Everything in Monthly",
