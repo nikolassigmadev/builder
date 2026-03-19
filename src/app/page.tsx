@@ -84,10 +84,8 @@ export default function Home() {
               <a
                 key={item}
                 href={`#${item.toLowerCase()}`}
-                className="text-sm font-medium uppercase tracking-widest transition-colors duration-150"
-                style={{ color: colors.text, opacity: 0.75 }}
-                onMouseEnter={(e) => ((e.target as HTMLElement).style.color = colors.accent)}
-                onMouseLeave={(e) => ((e.target as HTMLElement).style.color = colors.text)}
+                className="text-sm font-medium uppercase tracking-widest transition-opacity duration-150 hover:opacity-100"
+                style={{ color: colors.text, opacity: 0.65 }}
               >
                 {item}
               </a>
