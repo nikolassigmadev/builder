@@ -16,7 +16,7 @@ function getContent() {
   return JSON.parse(fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8"));
 }
 
-function saveContent(content: Record<string, unknown>) {
+async function saveContent(content: Record<string, unknown>): Promise<string> {
   // Ensure /tmp dirs exist
   if (!fs.existsSync(TMP_HISTORY_DIR)) {
     fs.mkdirSync(TMP_HISTORY_DIR, { recursive: true });
@@ -33,16 +33,15 @@ function saveContent(content: Record<string, unknown>) {
   const newContent = JSON.stringify(content, null, 2);
   fs.writeFileSync(TMP_CURRENT_PATH, newContent);
 
-  // Push to GitHub so the change is permanent in source code
-  pushToGitHub(newContent).catch((err) =>
-    console.error("GitHub sync failed:", err)
-  );
+  // Push to GitHub
+  const githubResult = await pushToGitHub(newContent);
+  return githubResult;
 }
 
-async function pushToGitHub(newContent: string) {
+async function pushToGitHub(newContent: string): Promise<string> {
   const token = process.env.GITHUB_TOKEN;
-  const repo = process.env.GITHUB_REPO; // e.g. "username/repo-name"
-  if (!token || !repo) return;
+  const repo = process.env.GITHUB_REPO;
+  if (!token || !repo) return "warning: GITHUB_TOKEN or GITHUB_REPO not set — change saved temporarily but will not persist after server restart";
 
   const apiUrl = `https://api.github.com/repos/${repo}/contents/content/current.json`;
 
@@ -53,11 +52,11 @@ async function pushToGitHub(newContent: string) {
       Accept: "application/vnd.github+json",
     },
   });
-  if (!getRes.ok) return;
+  if (!getRes.ok) return `warning: GitHub sync failed (could not get file SHA: ${getRes.status})`;
   const { sha } = await getRes.json();
 
   // Push updated file
-  await fetch(apiUrl, {
+  const putRes = await fetch(apiUrl, {
     method: "PUT",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -70,6 +69,9 @@ async function pushToGitHub(newContent: string) {
       sha,
     }),
   });
+
+  if (!putRes.ok) return `warning: GitHub sync failed (${putRes.status}) — change is temporary`;
+  return "success: saved to GitHub, Vercel will redeploy in ~30 seconds";
 }
 
 function getSnapshots() {
@@ -199,7 +201,8 @@ IMPORTANT RULES:
         (b): b is Anthropic.ToolUseBlock => b.type === "tool_use"
       );
 
-      const toolResults: Anthropic.ToolResultBlockParam[] = toolUseBlocks.map((toolUse) => {
+      const toolResults: Anthropic.ToolResultBlockParam[] = [];
+      for (const toolUse of toolUseBlocks) {
         let result: string;
 
         switch (toolUse.name) {
@@ -208,8 +211,8 @@ IMPORTANT RULES:
             break;
           case "update_content": {
             const input = toolUse.input as { content: Record<string, unknown> };
-            saveContent(input.content);
-            result = JSON.stringify({ success: true, message: "Content updated successfully" });
+            const githubStatus = await saveContent(input.content);
+            result = JSON.stringify({ success: true, message: "Content updated successfully", githubStatus });
             break;
           }
           case "list_snapshots":
@@ -228,12 +231,12 @@ IMPORTANT RULES:
             result = JSON.stringify({ error: "Unknown tool" });
         }
 
-        return {
+        toolResults.push({
           type: "tool_result" as const,
           tool_use_id: toolUse.id,
           content: result,
-        };
-      });
+        });
+      }
 
       response = await client.messages.create({
         model: "claude-sonnet-4-6",
