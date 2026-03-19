@@ -251,7 +251,7 @@ IMPORTANT RULES:
             result = JSON.stringify(getContent());
             break;
           case "update_content": {
-            const githubStatus = await saveContent(args.content);
+            const githubStatus = await saveContent(args.content ?? args);
             result = JSON.stringify({ success: true, message: "Content updated successfully", githubStatus });
             break;
           }
