@@ -105,10 +105,10 @@
     "hours": "Mon-Fri: 5AM-11PM | Sat-Sun: 7AM-9PM"
   },
   "colors": {
-    "primary": "#16a34a",
-    "secondary": "#052e16",
-    "accent": "#86efac",
-    "background": "#030d06",
-    "text": "#f0fdf4"
+    "primary": "#FFA500",
+    "secondary": "#FF8C00",
+    "accent": "#FFD700",
+    "background": "#FFEBCD",
+    "text": "#000000"
   }
 }
