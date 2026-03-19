@@ -72,7 +72,11 @@ async function pushToGitHub(newContent: string): Promise<string> {
       Accept: "application/vnd.github+json",
     },
   });
-  if (!getRes.ok) return `warning: GitHub sync failed (could not get file SHA: ${getRes.status})`;
+  if (!getRes.ok) {
+    const body = await getRes.text();
+    console.error("GitHub GET failed:", getRes.status, body);
+    return `warning: GitHub sync failed (could not get file SHA: ${getRes.status} — ${body})`;
+  }
   const { sha } = await getRes.json();
 
   // Push updated file
