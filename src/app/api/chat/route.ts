@@ -235,6 +235,8 @@ IMPORTANT RULES:
       messages: apiMessages,
     });
 
+    let contentChanged = false;
+
     // Handle tool call loop
     while (response.choices[0].finish_reason === "tool_calls") {
       const assistantMessage = response.choices[0].message;
@@ -252,6 +254,7 @@ IMPORTANT RULES:
             break;
           case "update_content": {
             const githubStatus = await saveContent(args.content ?? args);
+            contentChanged = true;
             result = JSON.stringify({ success: true, message: "Content updated successfully", githubStatus });
             break;
           }
@@ -260,6 +263,7 @@ IMPORTANT RULES:
             break;
           case "restore_snapshot": {
             const success = restoreSnapshot(args.filename);
+            if (success) contentChanged = true;
             result = JSON.stringify({
               success,
               message: success ? "Snapshot restored successfully" : "Snapshot not found",
@@ -293,6 +297,7 @@ IMPORTANT RULES:
 
     return NextResponse.json({
       response: text || "Done! Refresh the site to see your changes.",
+      changed: contentChanged,
     });
   } catch (error: unknown) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
