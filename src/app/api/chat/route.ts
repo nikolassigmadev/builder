@@ -8,30 +8,50 @@ const TMP_DIR = "/tmp/content";
 const TMP_CURRENT_PATH = path.join(TMP_DIR, "current.json");
 const TMP_HISTORY_DIR = path.join(TMP_DIR, "history");
 
-function getContent() {
-  // Check /tmp first (has latest changes made during this session)
-  if (fs.existsSync(TMP_CURRENT_PATH)) {
-    return JSON.parse(fs.readFileSync(TMP_CURRENT_PATH, "utf-8"));
+// Use the real project path when writable (localhost), fall back to /tmp (read-only hosts)
+function isProjectWritable() {
+  try {
+    fs.accessSync(path.dirname(BUNDLED_CURRENT_PATH), fs.constants.W_OK);
+    return true;
+  } catch {
+    return false;
   }
-  return JSON.parse(fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8"));
+}
+
+function getActivePaths() {
+  if (isProjectWritable()) {
+    const historyDir = path.join(process.cwd(), "content", "history");
+    return { currentPath: BUNDLED_CURRENT_PATH, historyDir };
+  }
+  return { currentPath: TMP_CURRENT_PATH, historyDir: TMP_HISTORY_DIR };
+}
+
+function getContent() {
+  const { currentPath } = getActivePaths();
+  // On read-only hosts, /tmp may not have the file yet — fall back to bundled
+  if (currentPath === TMP_CURRENT_PATH && !fs.existsSync(TMP_CURRENT_PATH)) {
+    return JSON.parse(fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8"));
+  }
+  return JSON.parse(fs.readFileSync(currentPath, "utf-8"));
 }
 
 async function saveContent(content: Record<string, unknown>): Promise<string> {
-  // Ensure /tmp dirs exist
-  if (!fs.existsSync(TMP_HISTORY_DIR)) {
-    fs.mkdirSync(TMP_HISTORY_DIR, { recursive: true });
+  const { currentPath, historyDir } = getActivePaths();
+
+  if (!fs.existsSync(historyDir)) {
+    fs.mkdirSync(historyDir, { recursive: true });
   }
 
   // Snapshot current before overwriting
-  const current = fs.existsSync(TMP_CURRENT_PATH)
-    ? fs.readFileSync(TMP_CURRENT_PATH, "utf-8")
+  const current = fs.existsSync(currentPath)
+    ? fs.readFileSync(currentPath, "utf-8")
     : fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8");
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  fs.writeFileSync(path.join(TMP_HISTORY_DIR, `${timestamp}.json`), current);
+  fs.writeFileSync(path.join(historyDir, `${timestamp}.json`), current);
 
-  // Write new content to /tmp
+  // Write new content
   const newContent = JSON.stringify(content, null, 2);
-  fs.writeFileSync(TMP_CURRENT_PATH, newContent);
+  fs.writeFileSync(currentPath, newContent);
 
   // Push to GitHub
   const githubResult = await pushToGitHub(newContent);
@@ -75,9 +95,10 @@ async function pushToGitHub(newContent: string): Promise<string> {
 }
 
 function getSnapshots() {
-  if (!fs.existsSync(TMP_HISTORY_DIR)) return [];
+  const { historyDir } = getActivePaths();
+  if (!fs.existsSync(historyDir)) return [];
   return fs
-    .readdirSync(TMP_HISTORY_DIR)
+    .readdirSync(historyDir)
     .filter((f) => f.endsWith(".json"))
     .sort()
     .reverse()
@@ -85,23 +106,24 @@ function getSnapshots() {
 }
 
 function restoreSnapshot(filename: string) {
-  const snapshotPath = path.join(TMP_HISTORY_DIR, filename);
+  const { currentPath, historyDir } = getActivePaths();
+  const snapshotPath = path.join(historyDir, filename);
   if (!fs.existsSync(snapshotPath)) return false;
 
-  if (!fs.existsSync(TMP_HISTORY_DIR)) {
-    fs.mkdirSync(TMP_HISTORY_DIR, { recursive: true });
+  if (!fs.existsSync(historyDir)) {
+    fs.mkdirSync(historyDir, { recursive: true });
   }
 
   // Snapshot current before restoring
-  const current = fs.existsSync(TMP_CURRENT_PATH)
-    ? fs.readFileSync(TMP_CURRENT_PATH, "utf-8")
+  const current = fs.existsSync(currentPath)
+    ? fs.readFileSync(currentPath, "utf-8")
     : fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8");
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  fs.writeFileSync(path.join(TMP_HISTORY_DIR, `${timestamp}.json`), current);
+  fs.writeFileSync(path.join(historyDir, `${timestamp}.json`), current);
 
   // Restore
   const snapshot = fs.readFileSync(snapshotPath, "utf-8");
-  fs.writeFileSync(TMP_CURRENT_PATH, snapshot);
+  fs.writeFileSync(currentPath, snapshot);
   return true;
 }
 
