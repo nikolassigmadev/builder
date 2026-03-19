@@ -3,8 +3,8 @@
   "hero": {
     "headline": "GYM",
     "subheadline": "New York's Premier Fitness Destination",
-    "ctaText": "<span style='font-size: 2.5em; color: green; font-weight: bold;'>Start Your Free Trial</span>",
-    "ctaLink": "#contact"
+    "ctaText": "",
+    "ctaLink": ""
   },
   "about": {
     "title": "About Us",
