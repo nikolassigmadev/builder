@@ -148,7 +148,12 @@ export async function POST(req: Request) {
   }
   const client = new Anthropic({ apiKey });
 
-  const currentContent = getContent();
+  let currentContent: Record<string, unknown>;
+  try {
+    currentContent = getContent();
+  } catch {
+    return NextResponse.json({ response: "Could not read site content. Make sure content/current.json exists on the server." }, { status: 500 });
+  }
 
   const systemPrompt = `You are a friendly website editor assistant for a gym website. The user will ask you to make changes to their website content, and you have tools to do so.
 
@@ -172,7 +177,7 @@ IMPORTANT RULES:
 
   try {
     let response = await client.messages.create({
-      model: "claude-sonnet-4-20250514",
+      model: "claude-sonnet-4-6",
       max_tokens: 4096,
       system: systemPrompt,
       tools,
@@ -222,7 +227,7 @@ IMPORTANT RULES:
       });
 
       response = await client.messages.create({
-        model: "claude-sonnet-4-20250514",
+        model: "claude-sonnet-4-6",
         max_tokens: 4096,
         system: systemPrompt,
         tools,
