@@ -21,7 +21,46 @@ function saveContent(content: Record<string, unknown>) {
   fs.writeFileSync(path.join(HISTORY_DIR, `${timestamp}.json`), current);
 
   // Write new
-  fs.writeFileSync(CURRENT_PATH, JSON.stringify(content, null, 2));
+  const newContent = JSON.stringify(content, null, 2);
+  fs.writeFileSync(CURRENT_PATH, newContent);
+
+  // Push to GitHub so the change is permanent in source code
+  pushToGitHub(newContent).catch((err) =>
+    console.error("GitHub sync failed:", err)
+  );
+}
+
+async function pushToGitHub(newContent: string) {
+  const token = process.env.GITHUB_TOKEN;
+  const repo = process.env.GITHUB_REPO; // e.g. "username/repo-name"
+  if (!token || !repo) return;
+
+  const apiUrl = `https://api.github.com/repos/${repo}/contents/content/current.json`;
+
+  // Get current SHA (required for updates)
+  const getRes = await fetch(apiUrl, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+    },
+  });
+  if (!getRes.ok) return;
+  const { sha } = await getRes.json();
+
+  // Push updated file
+  await fetch(apiUrl, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      Accept: "application/vnd.github+json",
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      message: "chore: update site content via admin panel",
+      content: Buffer.from(newContent).toString("base64"),
+      sha,
+    }),
+  });
 }
 
 function getSnapshots() {
