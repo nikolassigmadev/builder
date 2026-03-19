@@ -110,5 +110,9 @@
     "accent": "#FF4500",
     "background": "#000000",
     "text": "#FFFFFF"
+  },
+  "animation": {
+    "fadeInOnScroll": true,
+    "hoverLift": true
   }
 }
