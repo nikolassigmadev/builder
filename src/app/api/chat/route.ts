@@ -3,26 +3,35 @@ import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
 
-const CONTENT_DIR = path.join(process.cwd(), "content");
-const CURRENT_PATH = path.join(CONTENT_DIR, "current.json");
-const HISTORY_DIR = path.join(CONTENT_DIR, "history");
+const BUNDLED_CURRENT_PATH = path.join(process.cwd(), "content", "current.json");
+const TMP_DIR = "/tmp/content";
+const TMP_CURRENT_PATH = path.join(TMP_DIR, "current.json");
+const TMP_HISTORY_DIR = path.join(TMP_DIR, "history");
 
 function getContent() {
-  return JSON.parse(fs.readFileSync(CURRENT_PATH, "utf-8"));
+  // Check /tmp first (has latest changes made during this session)
+  if (fs.existsSync(TMP_CURRENT_PATH)) {
+    return JSON.parse(fs.readFileSync(TMP_CURRENT_PATH, "utf-8"));
+  }
+  return JSON.parse(fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8"));
 }
 
 function saveContent(content: Record<string, unknown>) {
-  // Snapshot first
-  if (!fs.existsSync(HISTORY_DIR)) {
-    fs.mkdirSync(HISTORY_DIR, { recursive: true });
+  // Ensure /tmp dirs exist
+  if (!fs.existsSync(TMP_HISTORY_DIR)) {
+    fs.mkdirSync(TMP_HISTORY_DIR, { recursive: true });
   }
-  const current = fs.readFileSync(CURRENT_PATH, "utf-8");
-  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  fs.writeFileSync(path.join(HISTORY_DIR, `${timestamp}.json`), current);
 
-  // Write new
+  // Snapshot current before overwriting
+  const current = fs.existsSync(TMP_CURRENT_PATH)
+    ? fs.readFileSync(TMP_CURRENT_PATH, "utf-8")
+    : fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8");
+  const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
+  fs.writeFileSync(path.join(TMP_HISTORY_DIR, `${timestamp}.json`), current);
+
+  // Write new content to /tmp
   const newContent = JSON.stringify(content, null, 2);
-  fs.writeFileSync(CURRENT_PATH, newContent);
+  fs.writeFileSync(TMP_CURRENT_PATH, newContent);
 
   // Push to GitHub so the change is permanent in source code
   pushToGitHub(newContent).catch((err) =>
@@ -64,33 +73,33 @@ async function pushToGitHub(newContent: string) {
 }
 
 function getSnapshots() {
-  if (!fs.existsSync(HISTORY_DIR)) return [];
+  if (!fs.existsSync(TMP_HISTORY_DIR)) return [];
   return fs
-    .readdirSync(HISTORY_DIR)
+    .readdirSync(TMP_HISTORY_DIR)
     .filter((f) => f.endsWith(".json"))
     .sort()
     .reverse()
-    .map((f) => {
-      const raw = f.replace(".json", "").replace(/-/g, (m, i) => {
-        // Convert back: 2026-03-19T14-00-00-000Z → readable
-        return i < 10 ? m : ":";
-      });
-      return { filename: f, timestamp: f.replace(".json", "") };
-    });
+    .map((f) => ({ filename: f, timestamp: f.replace(".json", "") }));
 }
 
 function restoreSnapshot(filename: string) {
-  const snapshotPath = path.join(HISTORY_DIR, filename);
+  const snapshotPath = path.join(TMP_HISTORY_DIR, filename);
   if (!fs.existsSync(snapshotPath)) return false;
 
+  if (!fs.existsSync(TMP_HISTORY_DIR)) {
+    fs.mkdirSync(TMP_HISTORY_DIR, { recursive: true });
+  }
+
   // Snapshot current before restoring
-  const current = fs.readFileSync(CURRENT_PATH, "utf-8");
+  const current = fs.existsSync(TMP_CURRENT_PATH)
+    ? fs.readFileSync(TMP_CURRENT_PATH, "utf-8")
+    : fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8");
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  fs.writeFileSync(path.join(HISTORY_DIR, `${timestamp}.json`), current);
+  fs.writeFileSync(path.join(TMP_HISTORY_DIR, `${timestamp}.json`), current);
 
   // Restore
   const snapshot = fs.readFileSync(snapshotPath, "utf-8");
-  fs.writeFileSync(CURRENT_PATH, snapshot);
+  fs.writeFileSync(TMP_CURRENT_PATH, snapshot);
   return true;
 }
 
