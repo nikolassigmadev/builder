@@ -1,133 +1,5 @@
 {
   "siteTitle": "buy",
-  "hero": {
-    "headline": "phone",
-    "subheadline": "New York's Premier Fitness Destination",
-    "ctaText": "",
-    "ctaLink": ""
-  },
-  "about": {
-    "title": "About Us",
-    "description": "Located in the heart of Manhattan, Iron Forge Gym has been transforming lives since 2018. Our 15,000 sq ft facility features state-of-the-art equipment, expert trainers, and a community that pushes you to be your best. Whether you're a beginner or a seasoned athlete, Iron Forge is where champions are made."
-  },
-  "classes": {
-    "title": "Our Classes",
-    "items": [
-      {
-        "name": "HIIT Blitz",
-        "time": "6:00 AM - 7:00 AM",
-        "days": "Mon / Wed / Fri",
-        "description": "High-intensity interval training to torch calories and build endurance."
-      },
-      {
-        "name": "Power Lifting",
-        "time": "7:30 AM - 9:00 AM",
-        "days": "Tue / Thu / Sat",
-        "description": "Structured strength training focused on the big three lifts."
-      },
-      {
-        "name": "Yoga Flow",
-        "time": "12:00 PM - 1:00 PM",
-        "days": "Mon - Fri",
-        "description": "Restore your body and mind with guided vinyasa flow sessions."
-      },
-      {
-        "name": "Boxing Fundamentals",
-        "time": "5:30 PM - 6:30 PM",
-        "days": "Mon / Wed / Fri",
-        "description": "Learn technique, build power, and relieve stress in the ring."
-      },
-      {
-        "name": "Zumba Dance",
-        "time": "6:30 PM - 7:30 PM",
-        "days": "Tue / Thu",
-        "description": "Fun and energetic dance sessions to get your groove on."
-      },
-      {
-        "name": "Pilates Core",
-        "time": "7:00 PM - 8:00 PM",
-        "days": "Mon / Wed",
-        "description": "Strengthen and tone your core with focused Pilates techniques."
-      },
-      {
-        "name": "Spin Class",
-        "time": "8:00 AM - 9:00 AM",
-        "days": "Sat",
-        "description": "High-energy indoor cycling workout for cardio enthusiasts."
-      },
-      {
-        "name": "Body Pump",
-        "time": "6:00 PM - 7:00 PM",
-        "days": "Fri",
-        "description": "Full-body workout using weights to build strength."
-      }
-    ]
-  },
-  "pricing": {
-    "title": "Membership Plans",
-    "plans": [
-      {
-        "name": "Day Pass",
-        "price": "$25",
-        "period": "per visit",
-        "features": [
-          "Full gym access",
-          "Locker room",
-          "One group class"
-        ]
-      },
-      {
-        "name": "Monthly",
-        "price": "$89",
-        "period": "per month",
-        "features": [
-          "Unlimited gym access",
-          "All group classes",
-          "Locker room",
-          "Free parkig"
-        ],
-        "popular": true
-      },
-      {
-        "name": "Annual",
-        "price": "69",
-        "period": "per month",
-        "features": [
-          "Everything in Monthly",
-          "2 personal training sessions",
-          "Nutrition consultation",
-          "Guest passes"
-        ]
-      }
-    ]
-  },
-  "testimonials": {
-    "title": "What Our Members Say",
-    "items": [
-      {
-        "name": "Sarah M.",
-        "text": "Iron Forge completely changed my fitness journey. The trainers actually care about your progress.",
-        "role": "Member since 2020"
-      },
-      {
-        "name": "James K.",
-        "text": "Best gym in Manhattan, hands down. The community here is unmatched.",
-        "role": "Member since 2019"
-      },
-      {
-        "name": "Diana R.",
-        "text": "I've tried every gym in the city. Iron Forge is the only one I've stuck with for over 3 years.",
-        "role": "Member since 2021"
-      }
-    ]
-  },
-  "contact": {
-    "title": "Get In Touch",
-    "address": "245 W 28th St, New York, NY 10001",
-    "phone": "8888888888",
-    "email": "hello@ironforge.gym",
-    "hours": "Mon-Fri: 5AM-11PM | Sat-Sun: 7AM-9PM"
-  },
   "colors": {
     "primary": "#00FF00",
     "secondary": "#000000",
@@ -135,8 +7,112 @@
     "background": "#000000",
     "text": "#FFFFFF"
   },
-  "animation": {
-    "fadeInOnScroll": true,
-    "hoverLift": true
-  }
+  "nav": {
+    "ctaText": "Join Now",
+    "ctaLink": "#contact"
+  },
+  "footer": {
+    "tagline": "New York's premier fitness destination. Where champions are forged.",
+    "socialLinks": ["IG", "FB", "TW", "YT"]
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "type": "hero",
+      "visible": true,
+      "data": {
+        "badge": "New York City's Premier Gym",
+        "headline": "phone",
+        "subheadline": "New York's Premier Fitness Destination",
+        "ctaText": "",
+        "ctaLink": "",
+        "secondaryCtaText": "View Classes",
+        "secondaryCtaLink": "#classes",
+        "stats": [
+          { "value": "15,000", "label": "Sq Ft Facility" },
+          { "value": "500+", "label": "Members" },
+          { "value": "Since 2018", "label": "Established" },
+          { "value": "20+", "label": "Classes" }
+        ]
+      }
+    },
+    {
+      "id": "about",
+      "type": "about",
+      "visible": true,
+      "data": {
+        "label": "Our Story",
+        "title": "About Us",
+        "description": "Located in the heart of Manhattan, Iron Forge Gym has been transforming lives since 2018. Our 15,000 sq ft facility features state-of-the-art equipment, expert trainers, and a community that pushes you to be your best. Whether you're a beginner or a seasoned athlete, Iron Forge is where champions are made.",
+        "ctaText": "Start Today",
+        "ctaLink": "#contact",
+        "stats": [
+          { "value": "500+", "label": "Active Members" },
+          { "value": "20+", "label": "Expert Trainers" },
+          { "value": "15K", "label": "Sq Ft Facility" },
+          { "value": "5\u2605", "label": "Rating" }
+        ]
+      }
+    },
+    {
+      "id": "classes",
+      "type": "classes",
+      "visible": true,
+      "data": {
+        "label": "Train Hard",
+        "title": "Our Classes",
+        "items": [
+          { "name": "HIIT Blitz", "icon": "\ud83d\udd25", "time": "6:00 AM - 7:00 AM", "days": "Mon / Wed / Fri", "description": "High-intensity interval training to torch calories and build endurance." },
+          { "name": "Power Lifting", "icon": "\ud83d\udcaa", "time": "7:30 AM - 9:00 AM", "days": "Tue / Thu / Sat", "description": "Structured strength training focused on the big three lifts." },
+          { "name": "Yoga Flow", "icon": "\ud83e\uddd8", "time": "12:00 PM - 1:00 PM", "days": "Mon - Fri", "description": "Restore your body and mind with guided vinyasa flow sessions." },
+          { "name": "Boxing Fundamentals", "icon": "\ud83e\udd4a", "time": "5:30 PM - 6:30 PM", "days": "Mon / Wed / Fri", "description": "Learn technique, build power, and relieve stress in the ring." },
+          { "name": "Zumba Dance", "icon": "\ud83d\udc83", "time": "6:30 PM - 7:30 PM", "days": "Tue / Thu", "description": "Fun and energetic dance sessions to get your groove on." },
+          { "name": "Pilates Core", "icon": "\ud83e\uddd1\u200d\ud83e\udd1d\u200d\ud83e\uddd1", "time": "7:00 PM - 8:00 PM", "days": "Mon / Wed", "description": "Strengthen and tone your core with focused Pilates techniques." },
+          { "name": "Spin Class", "icon": "\ud83d\udeb4", "time": "8:00 AM - 9:00 AM", "days": "Sat", "description": "High-energy indoor cycling workout for cardio enthusiasts." },
+          { "name": "Body Pump", "icon": "\ud83c\udfcb\ufe0f", "time": "6:00 PM - 7:00 PM", "days": "Fri", "description": "Full-body workout using weights to build strength." }
+        ]
+      }
+    },
+    {
+      "id": "pricing",
+      "type": "pricing",
+      "visible": true,
+      "data": {
+        "label": "Membership",
+        "title": "Membership Plans",
+        "plans": [
+          { "name": "Day Pass", "price": "$25", "period": "per visit", "features": ["Full gym access", "Locker room", "One group class"] },
+          { "name": "Monthly", "price": "$89", "period": "per month", "features": ["Unlimited gym access", "All group classes", "Locker room", "Free parkig"], "popular": true },
+          { "name": "Annual", "price": "69", "period": "per month", "features": ["Everything in Monthly", "2 personal training sessions", "Nutrition consultation", "Guest passes"] }
+        ]
+      }
+    },
+    {
+      "id": "testimonials",
+      "type": "testimonials",
+      "visible": true,
+      "data": {
+        "label": "Community",
+        "title": "What Our Members Say",
+        "items": [
+          { "name": "Sarah M.", "text": "Iron Forge completely changed my fitness journey. The trainers actually care about your progress.", "role": "Member since 2020" },
+          { "name": "James K.", "text": "Best gym in Manhattan, hands down. The community here is unmatched.", "role": "Member since 2019" },
+          { "name": "Diana R.", "text": "I've tried every gym in the city. Iron Forge is the only one I've stuck with for over 3 years.", "role": "Member since 2021" }
+        ]
+      }
+    },
+    {
+      "id": "contact",
+      "type": "contact",
+      "visible": true,
+      "data": {
+        "label": "Reach Us",
+        "title": "Get In Touch",
+        "address": "245 W 28th St, New York, NY 10001",
+        "phone": "8888888888",
+        "email": "hello@ironforge.gym",
+        "hours": "Mon-Fri: 5AM-11PM | Sat-Sun: 7AM-9PM"
+      }
+    }
+  ]
 }
