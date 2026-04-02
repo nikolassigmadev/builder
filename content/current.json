@@ -151,50 +151,6 @@
       }
     },
     {
-      "id": "pricing",
-      "type": "pricing",
-      "visible": true,
-      "data": {
-        "label": "Membership",
-        "title": "Membership Plans",
-        "plans": [
-          {
-            "name": "Day Pass",
-            "price": "$25",
-            "period": "per visit",
-            "features": [
-              "Full gym access",
-              "Locker room",
-              "One group class"
-            ]
-          },
-          {
-            "name": "Monthly",
-            "price": "$89",
-            "period": "per month",
-            "features": [
-              "Unlimited gym access",
-              "All group classes",
-              "Locker room",
-              "Free parkig"
-            ],
-            "popular": true
-          },
-          {
-            "name": "Annual",
-            "price": "69",
-            "period": "per month",
-            "features": [
-              "Everything in Monthly",
-              "2 personal training sessions",
-              "Nutrition consultation",
-              "Guest passes"
-            ]
-          }
-        ]
-      }
-    },
-    {
       "id": "testimonials",
       "type": "testimonials",
       "visible": true,
