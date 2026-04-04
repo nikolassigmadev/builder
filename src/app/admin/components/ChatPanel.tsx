@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 
 type Message = {
   role: "user" | "assistant";
@@ -49,9 +49,11 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [uploading, setUploading] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -100,6 +102,32 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
     if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
   }
+
+  const handleFileUpload = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    e.target.value = "";
+    setUploading(true);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch("/api/upload", { method: "POST", body: form });
+      const data = await res.json();
+      if (data.url) {
+        const msg = input.trim()
+          ? `${input.trim()} (image: ${data.url})`
+          : `Use this image: ${data.url}`;
+        setInput(msg);
+        setTimeout(() => { textareaRef.current?.focus(); autoResize(); }, 0);
+      } else {
+        setMessages(prev => [...prev, { role: "assistant", content: `Upload failed: ${data.error ?? "unknown error"}`, timestamp: new Date() }]);
+      }
+    } catch {
+      setMessages(prev => [...prev, { role: "assistant", content: "Upload failed. Please try again.", timestamp: new Date() }]);
+    } finally {
+      setUploading(false);
+    }
+  }, [input]);
 
   function useChip(text: string) {
     setInput(text);
@@ -189,6 +217,26 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
 
       {/* Input */}
       <form onSubmit={handleSend} className="p-3 border-t border-[#27272a] flex gap-2 items-end bg-[#09090b]">
+        {/* Hidden file input */}
+        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileUpload} />
+        {/* Upload button */}
+        <button
+          type="button"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={loading || uploading}
+          title="Upload image"
+          className="p-3 rounded-xl bg-[#18181b] border border-[#27272a] text-zinc-400 hover:text-white hover:border-[#e63946]/50 transition-colors disabled:opacity-30 flex-shrink-0"
+        >
+          {uploading ? (
+            <svg className="w-4 h-4 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+          ) : (
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+            </svg>
+          )}
+        </button>
         <div className="flex-1 relative">
           <textarea
             ref={textareaRef}

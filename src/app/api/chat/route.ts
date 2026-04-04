@@ -294,8 +294,8 @@ ${JSON.stringify(currentContent, null, 2)}
 ### Root Fields
 - **siteTitle**: Site name shown in nav and footer
 - **colors**: { primary, secondary, accent, background, text } — any valid CSS color (hex, rgb, hsl)
-- **nav**: { ctaText, ctaLink }
-- **footer**: { tagline, socialLinks: string[] }
+- **nav**: Full navigation config (see Nav section below)
+- **footer**: Full footer config with flexible column layout (see Footer section below)
 - **typography**: Controls all fonts and text weight (see Typography section)
 - **globalStyle**: Controls visual style across all sections (see GlobalStyle section)
 - **globalCSS**: Raw CSS string injected globally — use for advanced custom styles
@@ -311,6 +311,95 @@ ${JSON.stringify(currentContent, null, 2)}
   "data": { ... }     ← section content
 }
 \`\`\`
+
+═══════════════════════════════════════════════════════════
+## NAV (root-level "nav" object)
+═══════════════════════════════════════════════════════════
+
+\`\`\`json
+{
+  "ctaText": "Join Now",
+  "ctaLink": "#contact",
+  "logoText": "Site Name",         ← text logo (overrides siteTitle display)
+  "logoImageUrl": "https://...",   ← image logo URL (hides logoText)
+  "links": [                       ← custom nav links (overrides auto-generated from sections)
+    { "label": "Home", "href": "#" },
+    { "label": "Classes", "href": "#classes" }
+  ],
+  "layout": "default"              ← reserved for future variants
+}
+\`\`\`
+
+- If **logoImageUrl** is set, renders an img tag instead of text
+- If **links** is set, uses those links instead of auto-generating from sections
+- If **links** is null/omitted, nav links auto-generate from visible sections (hero and cta_banner excluded)
+- To remove the CTA button: set ctaText to ""
+
+═══════════════════════════════════════════════════════════
+## FOOTER (root-level "footer" object)
+═══════════════════════════════════════════════════════════
+
+The footer uses a flexible column system. Each column is an object with a "type" field:
+
+\`\`\`json
+{
+  "backgroundColor": "#hex or null",
+  "layout": "three-column",   ← "three-column" | "two-column" | "centered" | "minimal"
+  "copyright": "© 2026 Site Name. All rights reserved.",
+  "customCSS": "",
+  "columns": [
+    {
+      "type": "brand",
+      "logo": "Site Name",        ← text to display (falls back to siteTitle)
+      "logoImageUrl": "https://...", ← optional image logo
+      "tagline": "Your tagline here."
+    },
+    {
+      "type": "links",
+      "title": "Quick Links",
+      "links": [
+        { "label": "About", "href": "#about" },
+        { "label": "Classes", "href": "#classes" }
+      ]
+    },
+    {
+      "type": "social",
+      "title": "Follow Us",
+      "socialLinks": [
+        { "platform": "Instagram", "icon": "IG", "href": "https://instagram.com/..." },
+        { "platform": "Facebook", "icon": "FB", "href": "https://facebook.com/..." },
+        { "platform": "Twitter", "icon": "TW", "href": "https://twitter.com/..." },
+        { "platform": "YouTube", "icon": "YT", "href": "https://youtube.com/..." }
+      ]
+    },
+    {
+      "type": "text",
+      "title": "About Us",
+      "text": "Freeform paragraph text here."
+    },
+    {
+      "type": "contact",
+      "title": "Contact",
+      "phone": "+1 555-123-4567",
+      "email": "hello@example.com",
+      "address": "123 Main St, New York, NY"
+    }
+  ]
+}
+\`\`\`
+
+**Column layout rules:**
+- 1 column → full width
+- 2 columns → md:grid-cols-2
+- 3 columns → md:grid-cols-3 (default)
+- 4 columns → md:grid-cols-4
+- Mix any column types in any order
+
+**Structural change examples:**
+- "Social links on left, quick links on right" → set columns to [social_col, links_col]
+- "Add contact info to footer" → add a {type:"contact"} column
+- "Footer with just brand and social" → set columns to [brand_col, social_col]
+- "Two-column footer with brand left, links+social right stacked" → use two columns and put links in one
 
 ═══════════════════════════════════════════════════════════
 ## TYPOGRAPHY (root-level "typography" object)
@@ -498,9 +587,13 @@ When the user says something vague, translate it:
 5. Keep responses concise. After making a change, briefly say what you did.
 6. Report the githubStatus from tool results.
 7. When the user asks to undo or go back, use list_snapshots then restore_snapshot.
-8. Nav links auto-generate from visible sections (hero and cta_banner types are excluded).
+8. Nav links auto-generate from visible sections unless nav.links is explicitly set.
 9. For images, use search_images to find URLs, then set them with patch_content.
-10. The globalCSS field accepts any valid CSS — use it for effects the schema doesn't cover.`;
+10. The globalCSS field accepts any valid CSS — use it for effects the schema doesn't cover.
+11. **Footer structure changes** (move columns, add/remove columns, change layout) MUST use the columns array schema. Always use update_content or patch_content to set footer.columns. Never claim a structural footer change is done without actually setting footer.columns.
+12. **Nav structure changes** (custom links, logo image, remove CTA) use the nav object fields. Use patch_content for targeted nav changes.
+13. **User-uploaded images**: When the user's message contains "image: /uploads/..." or a URL, use that URL directly in imageUrl fields. Do not search for a replacement — use exactly the URL provided.
+14. To restructure the footer (e.g. "social on left, links on right"), set footer.columns to an array with columns in the desired order.`;
 }
 
 // ── Route Handler ──────────────────────────────────────────────────

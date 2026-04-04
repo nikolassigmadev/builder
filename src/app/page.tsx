@@ -44,11 +44,33 @@ type GlobalStyle = {
   navStyle?: "solid" | "transparent" | "floating";
 };
 
+type FooterColumn =
+  | { type: "brand"; logo?: string; logoImageUrl?: string; tagline?: string }
+  | { type: "links"; title?: string; links: { label: string; href: string }[] }
+  | { type: "social"; title?: string; socialLinks: { platform: string; icon: string; href: string }[] }
+  | { type: "text"; title?: string; text: string }
+  | { type: "contact"; title?: string; phone?: string; email?: string; address?: string };
+
 type SiteContent = {
   siteTitle: string;
   colors: { primary: string; secondary: string; accent: string; background: string; text: string };
-  nav: { ctaText: string; ctaLink: string };
-  footer: { tagline: string; socialLinks: string[] };
+  nav: {
+    ctaText: string;
+    ctaLink: string;
+    logoText?: string;
+    logoImageUrl?: string;
+    links?: { label: string; href: string }[];
+    layout?: "default" | "centered" | "minimal";
+  };
+  footer: {
+    tagline?: string;
+    socialLinks?: string[];
+    layout?: "three-column" | "two-column" | "centered" | "minimal";
+    backgroundColor?: string;
+    columns?: FooterColumn[];
+    copyright?: string;
+    customCSS?: string;
+  };
   typography?: Typography;
   globalStyle?: GlobalStyle;
   globalCSS?: string;
@@ -1167,15 +1189,25 @@ export default function Home() {
       <style dangerouslySetInnerHTML={{ __html: animationCSS + "\n" + allCustomCSS }} />
 
       {/* Navigation */}
-      <nav className={`fixed z-50 px-6 py-4 ${navStyle === "floating" ? "top-0 left-0 right-0" : "top-0 left-0 right-0"}`} style={navBg}>
+      <nav className="fixed z-50 top-0 left-0 right-0 px-6 py-4" style={navBg}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <span className="text-xl tracking-tighter" style={{ color: colors.primary, fontFamily: headingFontCss, fontWeight: hW(ty) }}>
-            {content.siteTitle}
-          </span>
+          {/* Logo */}
+          {content.nav?.logoImageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img src={content.nav.logoImageUrl} alt={content.nav?.logoText ?? content.siteTitle} className="h-8 object-contain" />
+          ) : (
+            <span className="text-xl tracking-tighter" style={{ color: colors.primary, fontFamily: headingFontCss, fontWeight: hW(ty) }}>
+              {content.nav?.logoText ?? content.siteTitle}
+            </span>
+          )}
+          {/* Nav links — custom array or auto-generated from sections */}
           <div className="hidden md:flex items-center gap-8">
-            {navSections.map(s => (
-              <a key={s.id} href={`#${s.id}`} className="text-sm font-medium uppercase tracking-widest transition-opacity duration-150 hover:opacity-100"
-                style={{ color: colors.text, opacity: 0.65 }}>{s.data?.title || s.id}</a>
+            {(content.nav?.links
+              ? content.nav.links
+              : navSections.map(s => ({ label: s.data?.title || s.id, href: `#${s.id}` }))
+            ).map((link: { label: string; href: string }) => (
+              <a key={link.href} href={link.href} className="text-sm font-medium uppercase tracking-widest transition-opacity duration-150 hover:opacity-100"
+                style={{ color: colors.text, opacity: 0.65 }}>{link.label}</a>
             ))}
           </div>
           {content.nav?.ctaText && (
@@ -1195,42 +1227,107 @@ export default function Home() {
       ))}
 
       {/* Footer */}
-      <footer className="py-16 px-6" style={{ backgroundColor: colors.secondary, borderTop: `1px solid ${colors.primary}15` }}>
-        <div className="max-w-6xl mx-auto">
-          <div className="grid md:grid-cols-3 gap-10 mb-12">
-            <div>
-              <span className="text-2xl tracking-tighter block mb-3" style={{ color: colors.primary, fontFamily: headingFontCss, fontWeight: hW(ty) }}>{content.siteTitle}</span>
-              <p className="text-sm leading-relaxed" style={{ color: colors.text, opacity: 0.45 }}>{content.footer?.tagline}</p>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: colors.primary }}>Quick Links</p>
-              <ul className="flex flex-col gap-2">
-                {navSections.map(s => (
-                  <li key={s.id}>
-                    <a href={`#${s.id}`} className="text-sm transition-colors duration-150 hover:opacity-100" style={{ color: colors.text, opacity: 0.5 }}>
-                      {s.data?.title || s.id}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: colors.primary }}>Follow Us</p>
-              <div className="flex gap-3">
-                {(content.footer?.socialLinks ?? []).map(social => (
-                  <a key={social} href="#" className="w-9 h-9 rounded flex items-center justify-center text-xs font-black transition-all duration-150 hover:brightness-110"
-                    style={{ backgroundColor: `${colors.primary}20`, color: colors.accent, borderRadius: getBR(undefined, gs) }} aria-label={social}>{social}</a>
-                ))}
+      {(() => {
+        const footer = content.footer ?? {};
+        const footerBg = footer.backgroundColor ?? colors.secondary;
+        const colCount = footer.columns?.length ?? 3;
+        const gridCols = colCount === 1 ? "" : colCount === 2 ? "md:grid-cols-2" : colCount === 4 ? "md:grid-cols-4" : "md:grid-cols-3";
+
+        const renderColumn = (col: FooterColumn, i: number) => {
+          if (col.type === "brand") {
+            return (
+              <div key={i}>
+                {col.logoImageUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img src={col.logoImageUrl} alt={col.logo ?? content.siteTitle} className="h-8 mb-3 object-contain" />
+                ) : (
+                  <span className="text-2xl tracking-tighter block mb-3" style={{ color: colors.primary, fontFamily: headingFontCss, fontWeight: hW(ty) }}>
+                    {col.logo ?? content.siteTitle}
+                  </span>
+                )}
+                {col.tagline && <p className="text-sm leading-relaxed" style={{ color: colors.text, opacity: 0.45 }}>{col.tagline}</p>}
+              </div>
+            );
+          }
+          if (col.type === "links") {
+            return (
+              <div key={i}>
+                {col.title && <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: colors.primary }}>{col.title}</p>}
+                <ul className="flex flex-col gap-2">
+                  {col.links.map((link, li) => (
+                    <li key={li}>
+                      <a href={link.href} className="text-sm transition-colors duration-150 hover:opacity-100" style={{ color: colors.text, opacity: 0.5 }}>{link.label}</a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            );
+          }
+          if (col.type === "social") {
+            return (
+              <div key={i}>
+                {col.title && <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: colors.primary }}>{col.title}</p>}
+                <div className="flex gap-3 flex-wrap">
+                  {col.socialLinks.map((s, si) => (
+                    <a key={si} href={s.href || "#"} className="w-9 h-9 rounded flex items-center justify-center text-xs font-black transition-all duration-150 hover:brightness-110"
+                      style={{ backgroundColor: `${colors.primary}20`, color: colors.accent, borderRadius: getBR(undefined, gs) }} aria-label={s.platform}>{s.icon}</a>
+                  ))}
+                </div>
+              </div>
+            );
+          }
+          if (col.type === "text") {
+            return (
+              <div key={i}>
+                {col.title && <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: colors.primary }}>{col.title}</p>}
+                <p className="text-sm leading-relaxed" style={{ color: colors.text, opacity: 0.55 }}>{col.text}</p>
+              </div>
+            );
+          }
+          if (col.type === "contact") {
+            return (
+              <div key={i}>
+                {col.title && <p className="text-xs font-bold uppercase tracking-widest mb-4" style={{ color: colors.primary }}>{col.title}</p>}
+                <div className="flex flex-col gap-1.5 text-sm" style={{ color: colors.text, opacity: 0.55 }}>
+                  {col.phone && <span>{col.phone}</span>}
+                  {col.email && <span>{col.email}</span>}
+                  {col.address && <span>{col.address}</span>}
+                </div>
+              </div>
+            );
+          }
+          return null;
+        };
+
+        // Legacy fallback: no columns defined — auto-build 3-col from old schema
+        const legacyColumns: FooterColumn[] = footer.columns ?? [
+          { type: "brand", tagline: footer.tagline },
+          { type: "links", title: "Quick Links", links: navSections.map(s => ({ label: s.data?.title || s.id, href: `#${s.id}` })) },
+          { type: "social", title: "Follow Us", socialLinks: (footer.socialLinks ?? []).map(s => ({ platform: s, icon: s, href: "#" })) },
+        ];
+
+        return (
+          <footer style={{ backgroundColor: footerBg, borderTop: `1px solid ${colors.primary}15`, padding: "64px 24px 32px" }}>
+            {footer.customCSS && <style dangerouslySetInnerHTML={{ __html: footer.customCSS }} />}
+            <div className="max-w-6xl mx-auto">
+              {footer.layout === "centered" ? (
+                <div className="text-center mb-12">
+                  {legacyColumns.map(renderColumn)}
+                </div>
+              ) : (
+                <div className={`grid gap-10 mb-12 ${gridCols}`}>
+                  {legacyColumns.map(renderColumn)}
+                </div>
+              )}
+              <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
+                style={{ borderTop: `1px solid ${colors.primary}15`, color: colors.text, opacity: 0.35 }}>
+                <p>{footer.copyright ?? `\u00A9 ${new Date().getFullYear()} ${content.siteTitle}. All rights reserved.`}</p>
+                <Link href="/admin" className="underline transition-opacity hover:opacity-100" style={{ color: colors.text }}>Edit this site</Link>
               </div>
             </div>
-          </div>
-          <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs"
-            style={{ borderTop: `1px solid ${colors.primary}15`, color: colors.text, opacity: 0.35 }}>
-            <p>&copy; {new Date().getFullYear()} {content.siteTitle}. All rights reserved.</p>
-            <Link href="/admin" className="underline transition-opacity hover:opacity-100" style={{ color: colors.text }}>Edit this site</Link>
-          </div>
-        </div>
-      </footer>
+          </footer>
+        );
+      })()}
 
     </main>
   );
