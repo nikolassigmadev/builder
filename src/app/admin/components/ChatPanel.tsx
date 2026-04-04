@@ -9,18 +9,33 @@ type Message = {
 };
 
 const QUICK_CHIPS = [
-  "Change the headline",
-  "Update phone number",
-  "Add a new class",
-  "Change primary color",
-  "Show version history",
-  "Undo last change",
+  { label: "Apply dark luxury theme", category: "themes" },
+  { label: "Apply bold athletic theme", category: "themes" },
+  { label: "Apply bright minimal theme", category: "themes" },
+  { label: "Switch font to Oswald", category: "style" },
+  { label: "Make cards look like glass", category: "style" },
+  { label: "Add scroll animations", category: "style" },
+  { label: "Add a hero image", category: "content" },
+  { label: "Add a testimonials section", category: "content" },
+  { label: "Change the primary color", category: "style" },
+  { label: "Show version history", category: "tools" },
 ];
 
 const INITIAL_MESSAGE: Message = {
   role: "assistant",
-  content:
-    "Hey! I'm your site editor. Tell me what you'd like to change — I'll update the site and you'll see it live in the preview.\n\nTry things like:\n- \"Change the headline to Summer Special\"\n- \"Update the phone number\"\n- \"Add a new class called Spin Cycle\"\n- \"Change the primary color to blue\"",
+  content: `Hey! I'm your AI site designer. I can customize **anything** on this website — content, colors, fonts, layouts, animations, and full design themes.
+
+**Quick examples:**
+- "Apply the dark luxury theme"
+- "Change the hero to a split layout with an image on the right"
+- "Make all cards use a glass effect"
+- "Switch to Oswald font and make it feel more athletic"
+- "Add a gradient background to the pricing section"
+- "Search for gym photos and add them to the gallery"
+- "Make the site more minimal and professional"
+- "Add custom CSS to make the hero text glow"
+
+What would you like to change?`,
   timestamp: new Date(),
 };
 
@@ -34,6 +49,7 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -57,7 +73,7 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
     if (textareaRef.current) textareaRef.current.style.height = "auto";
 
     const newMsg: Message = { role: "user", content: userMessage, timestamp: new Date() };
-    setMessages((prev) => [...prev, newMsg]);
+    setMessages(prev => [...prev, newMsg]);
     setLoading(true);
 
     try {
@@ -66,48 +82,42 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          messages: allMessages
-            .filter((_, i) => i > 0)
-            .map((m) => ({ role: m.role, content: m.content })),
+          messages: allMessages.filter((_, i) => i > 0).map(m => ({ role: m.role, content: m.content })),
         }),
       });
 
       const data = await res.json();
-      setMessages((prev) => [
-        ...prev,
-        { role: "assistant", content: data.response, timestamp: new Date() },
-      ]);
+      setMessages(prev => [...prev, { role: "assistant", content: data.response, timestamp: new Date() }]);
 
-      if (data.changed) {
-        onContentChanged?.();
-      }
+      if (data.changed) onContentChanged?.();
     } catch {
-      setMessages((prev) => [
-        ...prev,
-        {
-          role: "assistant",
-          content: "Something went wrong. Please try again.",
-          timestamp: new Date(),
-        },
-      ]);
+      setMessages(prev => [...prev, { role: "assistant", content: "Something went wrong. Please try again.", timestamp: new Date() }]);
     } finally {
       setLoading(false);
     }
   }
 
   function handleKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSend();
-    }
+    if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); }
   }
 
   function useChip(text: string) {
-    setInput(text + " ");
-    setTimeout(() => {
-      textareaRef.current?.focus();
-      autoResize();
-    }, 0);
+    setInput(text);
+    setTimeout(() => { textareaRef.current?.focus(); autoResize(); }, 0);
+  }
+
+  const showChips = messages.length <= 2 && !loading;
+  const categories = [...new Set(QUICK_CHIPS.map(c => c.category))];
+  const filteredChips = activeCategory ? QUICK_CHIPS.filter(c => c.category === activeCategory) : QUICK_CHIPS.slice(0, 6);
+
+  // Format assistant messages with basic markdown-like bold
+  function formatMessage(content: string) {
+    return content.split(/(\*\*[^*]+\*\*)/g).map((part, i) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return <strong key={i} className="font-semibold text-white">{part.slice(2, -2)}</strong>;
+      }
+      return <span key={i}>{part}</span>;
+    });
   }
 
   const charCount = input.length;
@@ -117,33 +127,16 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.map((msg, i) => (
-          <div
-            key={i}
-            className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}
-          >
-            <div className={`flex items-start gap-2 max-w-[88%] ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
-              {/* Avatar */}
-              <div
-                className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 ${
-                  msg.role === "user"
-                    ? "bg-[#e63946] text-white"
-                    : "bg-[#27272a] text-zinc-400"
-                }`}
-              >
+          <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
+            <div className={`flex items-start gap-2 max-w-[90%] ${msg.role === "user" ? "flex-row-reverse" : ""}`}>
+              <div className={`w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 mt-0.5 ${msg.role === "user" ? "bg-[#e63946] text-white" : "bg-[#27272a] text-zinc-400"}`}>
                 {msg.role === "user" ? "U" : "AI"}
               </div>
               <div
-                title={msg.timestamp.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-                className={`p-3 text-sm leading-relaxed whitespace-pre-wrap ${
-                  msg.role === "user"
-                    ? "bg-[#e63946] text-white rounded-2xl rounded-tr-lg"
-                    : "bg-[#18181b] text-zinc-300 rounded-2xl rounded-tl-lg border border-[#27272a]"
-                }`}
+                title={msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                className={`p-3 text-sm leading-relaxed whitespace-pre-wrap ${msg.role === "user" ? "bg-[#e63946] text-white rounded-2xl rounded-tr-lg" : "bg-[#18181b] text-zinc-300 rounded-2xl rounded-tl-lg border border-[#27272a]"}`}
               >
-                {msg.content}
+                {msg.role === "assistant" ? formatMessage(msg.content) : msg.content}
               </div>
             </div>
           </div>
@@ -152,16 +145,14 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
         {loading && (
           <div className="flex justify-start">
             <div className="flex items-start gap-2">
-              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold bg-[#27272a] text-zinc-400 flex-shrink-0 mt-0.5">
-                AI
-              </div>
+              <div className="w-7 h-7 rounded-lg flex items-center justify-center text-xs font-bold bg-[#27272a] text-zinc-400 flex-shrink-0 mt-0.5">AI</div>
               <div className="bg-[#18181b] border border-[#27272a] text-zinc-400 p-3 rounded-2xl rounded-tl-lg text-sm flex items-center gap-2">
                 <div className="flex gap-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-bounce" style={{ animationDelay: "0ms" }} />
                   <div className="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-bounce" style={{ animationDelay: "150ms" }} />
                   <div className="w-1.5 h-1.5 rounded-full bg-zinc-500 animate-bounce" style={{ animationDelay: "300ms" }} />
                 </div>
-                <span>Updating site...</span>
+                <span>Designing...</span>
               </div>
             </div>
           </div>
@@ -169,56 +160,53 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Quick action chips */}
-      {messages.length <= 2 && !loading && (
-        <div className="px-4 pb-3 flex flex-wrap gap-1.5">
-          {QUICK_CHIPS.map((chip) => (
+      {/* Quick chips */}
+      {showChips && (
+        <div className="px-4 pb-3">
+          {/* Category filter */}
+          <div className="flex gap-1.5 mb-2 overflow-x-auto no-scrollbar">
             <button
-              key={chip}
-              onClick={() => useChip(chip)}
-              className="text-xs px-3 py-1.5 rounded-full bg-[#18181b] border border-[#27272a] text-zinc-400 hover:text-white hover:border-[#e63946]/50 hover:bg-[#e63946]/10 transition-all"
-            >
-              {chip}
-            </button>
-          ))}
+              onClick={() => setActiveCategory(null)}
+              className={`text-[10px] px-2 py-1 rounded-full whitespace-nowrap transition-all ${!activeCategory ? "bg-[#e63946] text-white" : "bg-[#18181b] border border-[#27272a] text-zinc-500 hover:text-white"}`}
+            >all</button>
+            {categories.map(cat => (
+              <button key={cat} onClick={() => setActiveCategory(activeCategory === cat ? null : cat)}
+                className={`text-[10px] px-2 py-1 rounded-full whitespace-nowrap transition-all ${activeCategory === cat ? "bg-[#e63946] text-white" : "bg-[#18181b] border border-[#27272a] text-zinc-500 hover:text-white"}`}>
+                {cat}
+              </button>
+            ))}
+          </div>
+          <div className="flex flex-wrap gap-1.5">
+            {filteredChips.map(chip => (
+              <button key={chip.label} onClick={() => useChip(chip.label)}
+                className="text-xs px-3 py-1.5 rounded-full bg-[#18181b] border border-[#27272a] text-zinc-400 hover:text-white hover:border-[#e63946]/50 hover:bg-[#e63946]/10 transition-all">
+                {chip.label}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
       {/* Input */}
-      <form
-        onSubmit={handleSend}
-        className="p-3 border-t border-[#27272a] flex gap-2 items-end bg-[#09090b]"
-      >
+      <form onSubmit={handleSend} className="p-3 border-t border-[#27272a] flex gap-2 items-end bg-[#09090b]">
         <div className="flex-1 relative">
           <textarea
             ref={textareaRef}
             value={input}
-            onChange={(e) => {
-              setInput(e.target.value);
-              autoResize();
-            }}
+            onChange={e => { setInput(e.target.value); autoResize(); }}
             onKeyDown={handleKeyDown}
-            placeholder="Describe your changes..."
+            placeholder="Describe a design change or ask anything..."
             rows={1}
             disabled={loading}
             className="w-full p-3 pr-12 rounded-xl bg-[#18181b] text-white border border-[#27272a] focus:outline-none focus:border-[#e63946] focus:ring-1 focus:ring-[#e63946]/20 resize-none overflow-y-auto text-sm placeholder-zinc-600 disabled:opacity-50 transition-all"
             style={{ maxHeight: "120px" }}
           />
           {charCount > 0 && (
-            <span
-              className={`absolute bottom-2.5 right-2.5 text-[10px] pointer-events-none ${
-                charCount > 400 ? "text-[#e63946]" : "text-zinc-600"
-              }`}
-            >
-              {charCount}
-            </span>
+            <span className={`absolute bottom-2.5 right-2.5 text-[10px] pointer-events-none ${charCount > 400 ? "text-[#e63946]" : "text-zinc-600"}`}>{charCount}</span>
           )}
         </div>
-        <button
-          type="submit"
-          disabled={loading || !input.trim()}
-          className="p-3 rounded-xl bg-[#e63946] text-white hover:bg-[#d42f3c] transition-colors disabled:opacity-30 disabled:hover:bg-[#e63946] flex-shrink-0"
-        >
+        <button type="submit" disabled={loading || !input.trim()}
+          className="p-3 rounded-xl bg-[#e63946] text-white hover:bg-[#d42f3c] transition-colors disabled:opacity-30 disabled:hover:bg-[#e63946] flex-shrink-0">
           <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
             <path strokeLinecap="round" strokeLinejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
           </svg>
