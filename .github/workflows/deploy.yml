@@ -1,0 +1,26 @@
+name: Deploy to Hostinger
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build and deploy via SSH
+        uses: appleboy/ssh-action@v1
+        with:
+          host: 157.173.209.232
+          port: 65002
+          username: u887815898
+          password: ${{ secrets.SSH_PASSWORD }}
+          command_timeout: 10m
+          script: |
+            export PATH="/opt/alt/alt-nodejs22/root/usr/bin:$PATH"
+            cd ~/domains/lightgray-pelican-783022.hostingersite.com/public_html
+            git pull
+            npm install
+            npm run build
+            mkdir -p tmp && touch tmp/restart.txt
+            echo "Deploy complete"
