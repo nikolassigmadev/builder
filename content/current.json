@@ -18,6 +18,16 @@
       "FB",
       "TW",
       "YT"
+    ],
+    "quickLinks": [
+      "About Us",
+      "#about",
+      "Classes",
+      "#classes",
+      "Testimonials",
+      "#testimonials",
+      "Contact",
+      "#contact"
     ]
   },
   "sections": [
