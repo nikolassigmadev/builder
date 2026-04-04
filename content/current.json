@@ -54,36 +54,6 @@
       }
     },
     {
-      "id": "about",
-      "type": "about",
-      "visible": true,
-      "data": {
-        "label": "Our Story",
-        "title": "About Us",
-        "description": "Located in the heart of Manhattan, Iron Forge Gym has been transforming lives since 2018. Our 15,000 sq ft facility features state-of-the-art equipment, expert trainers, and a community that pushes you to be your best. Whether you're a beginner or a seasoned athlete, Iron Forge is where champions are made.",
-        "ctaText": "Start Today",
-        "ctaLink": "#contact",
-        "stats": [
-          {
-            "value": "500+",
-            "label": "Active Members"
-          },
-          {
-            "value": "20+",
-            "label": "Expert Trainers"
-          },
-          {
-            "value": "15K",
-            "label": "Sq Ft Facility"
-          },
-          {
-            "value": "5★",
-            "label": "Rating"
-          }
-        ]
-      }
-    },
-    {
       "id": "classes",
       "type": "classes",
       "visible": true,
@@ -91,20 +61,6 @@
         "label": "Train Hard",
         "title": "Our Classes",
         "items": [
-          {
-            "name": "HIIT Blitz",
-            "icon": "🔥",
-            "time": "6:00 AM - 7:00 AM",
-            "days": "Mon / Wed / Fri",
-            "description": "High-intensity interval training to torch calories and build endurance."
-          },
-          {
-            "name": "Power Lifting",
-            "icon": "💪",
-            "time": "7:30 AM - 9:00 AM",
-            "days": "Tue / Thu / Sat",
-            "description": "Structured strength training focused on the big three lifts."
-          },
           {
             "name": "Yoga Flow",
             "icon": "🧘",
@@ -118,6 +74,20 @@
             "time": "5:30 PM - 6:30 PM",
             "days": "Mon / Wed / Fri",
             "description": "Learn technique, build power, and relieve stress in the ring."
+          },
+          {
+            "name": "HIIT Blitz",
+            "icon": "🔥",
+            "time": "6:00 AM - 7:00 AM",
+            "days": "Mon / Wed / Fri",
+            "description": "High-intensity interval training to torch calories and build endurance."
+          },
+          {
+            "name": "Power Lifting",
+            "icon": "💪",
+            "time": "7:30 AM - 9:00 AM",
+            "days": "Tue / Thu / Sat",
+            "description": "Structured strength training focused on the big three lifts."
           },
           {
             "name": "Zumba Dance",
@@ -146,6 +116,36 @@
             "time": "6:00 PM - 7:00 PM",
             "days": "Fri",
             "description": "Full-body workout using weights to build strength."
+          }
+        ]
+      }
+    },
+    {
+      "id": "about",
+      "type": "about",
+      "visible": true,
+      "data": {
+        "label": "Our Story",
+        "title": "About Us",
+        "description": "Located in the heart of Manhattan, Iron Forge Gym has been transforming lives since 2018. Our 15,000 sq ft facility features state-of-the-art equipment, expert trainers, and a community that pushes you to be your best. Whether you're a beginner or a seasoned athlete, Iron Forge is where champions are made.",
+        "ctaText": "Start Today",
+        "ctaLink": "#contact",
+        "stats": [
+          {
+            "value": "500+",
+            "label": "Active Members"
+          },
+          {
+            "value": "20+",
+            "label": "Expert Trainers"
+          },
+          {
+            "value": "15K",
+            "label": "Sq Ft Facility"
+          },
+          {
+            "value": "5★",
+            "label": "Rating"
           }
         ]
       }
