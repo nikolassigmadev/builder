@@ -2,6 +2,7 @@ import OpenAI from "openai";
 import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 const BUNDLED_CURRENT_PATH = path.join(process.cwd(), "content", "current.json");
 const TMP_DIR = "/tmp/content";
@@ -635,7 +636,10 @@ export async function POST(req: Request) {
     let contentChanged = false;
     const allMessages = [...apiMessages];
 
-    while (response.choices[0].finish_reason === "tool_calls") {
+    const MAX_TOOL_ITERATIONS = 10;
+    let iterations = 0;
+    while (response.choices[0].finish_reason === "tool_calls" && iterations < MAX_TOOL_ITERATIONS) {
+      iterations++;
       const assistantMessage = response.choices[0].message;
       const toolCalls = assistantMessage.tool_calls ?? [];
       allMessages.push(assistantMessage);
@@ -718,6 +722,10 @@ export async function POST(req: Request) {
         tools,
         messages: allMessages,
       });
+    }
+
+    if (contentChanged) {
+      revalidatePath("/");
     }
 
     const text = response.choices[0].message.content;

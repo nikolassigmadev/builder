@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 
 const BUNDLED_CURRENT_PATH = path.join(process.cwd(), "content", "current.json");
 const TMP_DIR = "/tmp/content";
@@ -33,6 +34,8 @@ export async function PUT(req: Request) {
   fs.writeFileSync(path.join(TMP_HISTORY_DIR, `${timestamp}.json`), current);
 
   fs.writeFileSync(TMP_CURRENT_PATH, JSON.stringify(newContent, null, 2));
+
+  revalidatePath("/");
 
   return NextResponse.json({ success: true });
 }

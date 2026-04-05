@@ -1,33 +1,64 @@
 {
-  "siteTitle": "buy",
+  "siteTitle": "Pearl Dental Studio",
   "colors": {
-    "primary": "#d4af37",
-    "secondary": "#1a1a2e",
-    "accent": "#f5d76e",
-    "background": "#0a0a0f",
-    "text": "#f8f6f0"
+    "primary": "#1B6B93",
+    "secondary": "#EDF4F8",
+    "accent": "#D4A853",
+    "background": "#FFFFFF",
+    "text": "#1A2332"
+  },
+  "typography": {
+    "headingFont": "Playfair Display",
+    "headingWeight": "bold"
+  },
+  "globalStyle": {
+    "borderRadius": "lg",
+    "cardStyle": "elevated",
+    "maxWidth": "xl",
+    "sectionSpacing": "normal",
+    "animations": true,
+    "navStyle": "floating"
   },
   "nav": {
-    "ctaText": "Join Now",
-    "ctaLink": "#contact"
+    "ctaText": "Book Appointment",
+    "ctaLink": "#contact",
+    "logoText": "Pearl Dental",
+    "links": [
+      { "label": "Services", "href": "#services" },
+      { "label": "About", "href": "#about" },
+      { "label": "Team", "href": "#team" },
+      { "label": "Pricing", "href": "#pricing" },
+      { "label": "Contact", "href": "#contact" }
+    ]
   },
   "footer": {
-    "tagline": "New York's premier fitness destination. Where champions are forged.",
-    "socialLinks": [
-      "IG",
-      "FB",
-      "TW",
-      "YT"
-    ],
-    "quickLinks": [
-      "About Us",
-      "#about",
-      "Classes",
-      "#classes",
-      "Testimonials",
-      "#testimonials",
-      "Contact",
-      "#contact"
+    "layout": "three-column",
+    "copyright": "\u00a9 2026 Pearl Dental Studio. All rights reserved.",
+    "columns": [
+      {
+        "type": "brand",
+        "logo": "Pearl Dental",
+        "tagline": "Exceptional dental care in an atmosphere of comfort and elegance. Your smile is our passion."
+      },
+      {
+        "type": "links",
+        "title": "Quick Links",
+        "links": [
+          { "label": "Our Services", "href": "#services" },
+          { "label": "About Us", "href": "#about" },
+          { "label": "Meet the Team", "href": "#team" },
+          { "label": "Pricing", "href": "#pricing" },
+          { "label": "FAQ", "href": "#faq" },
+          { "label": "Contact", "href": "#contact" }
+        ]
+      },
+      {
+        "type": "contact",
+        "title": "Visit Us",
+        "phone": "(212) 555-0192",
+        "email": "hello@pearldental.com",
+        "address": "485 Madison Ave, Suite 1200, New York, NY 10022"
+      }
     ]
   },
   "sections": [
@@ -35,97 +66,104 @@
       "id": "hero",
       "type": "hero",
       "visible": true,
+      "style": {
+        "layout": "centered",
+        "animation": "fadeIn"
+      },
       "data": {
-        "badge": "New York City's Premier Gym",
-        "headline": "phone",
-        "subheadline": "New York's Premier Fitness Destination",
-        "ctaText": "",
-        "ctaLink": "",
-        "secondaryCtaText": "",
-        "secondaryCtaLink": "",
+        "badge": "Award-Winning Dental Care",
+        "headline": "Your Smile Our Masterpiece",
+        "subheadline": "Experience exceptional dentistry in a calm, luxurious setting. From routine check-ups to complete smile transformations, we bring artistry to every treatment.",
+        "ctaText": "Book Your Visit",
+        "ctaLink": "#contact",
+        "secondaryCtaText": "Explore Services",
+        "secondaryCtaLink": "#services",
         "stats": [
+          { "value": "15+", "label": "Years Experience" },
+          { "value": "10,000+", "label": "Happy Patients" },
+          { "value": "5\u2605", "label": "Google Rating" },
+          { "value": "12", "label": "Specialists" }
+        ]
+      }
+    },
+    {
+      "id": "features",
+      "type": "features",
+      "visible": true,
+      "style": {
+        "layout": "grid",
+        "animation": "slideUp"
+      },
+      "data": {
+        "label": "Why Pearl Dental",
+        "title": "Dentistry Designed Around You",
+        "subtitle": "Every detail of our practice is crafted for your comfort, health, and confidence.",
+        "columns": 4,
+        "items": [
           {
-            "value": "15,000",
-            "label": "Sq Ft Facility"
+            "icon": "\ud83d\udd2c",
+            "title": "Advanced Technology",
+            "description": "Digital X-rays, 3D scanning, and laser dentistry for precise, comfortable treatments with faster healing."
           },
           {
-            "value": "500+",
-            "label": "Members"
+            "icon": "\ud83e\ude7a",
+            "title": "Gentle Approach",
+            "description": "Sedation options and a calming environment designed to ease dental anxiety for every patient."
           },
           {
-            "value": "Since 2018",
-            "label": "Established"
+            "icon": "\u23f1\ufe0f",
+            "title": "Same-Day Solutions",
+            "description": "From crowns to emergency care, many treatments completed in a single convenient visit."
           },
           {
-            "value": "20+",
-            "label": "Classes"
+            "icon": "\u2728",
+            "title": "Personalized Care",
+            "description": "Customized treatment plans tailored to your unique dental health goals and lifestyle."
           }
         ]
       }
     },
     {
-      "id": "classes",
+      "id": "services",
       "type": "classes",
       "visible": true,
+      "style": {
+        "layout": "cards",
+        "animation": "slideUp"
+      },
       "data": {
-        "label": "Train Hard",
-        "title": "Our Classes",
+        "label": "What We Offer",
+        "title": "Our Services",
         "items": [
           {
-            "name": "Yoga Flow",
-            "icon": "🧘",
-            "time": "12:00 PM - 1:00 PM",
-            "days": "Mon - Fri",
-            "description": "Restore your body and mind with guided vinyasa flow sessions."
+            "name": "Cosmetic Dentistry",
+            "icon": "\ud83d\udc8e",
+            "description": "Veneers, bonding, and complete smile makeovers designed to give you the radiant, confident smile you deserve."
           },
           {
-            "name": "Boxing Fundamentals",
-            "icon": "🥊",
-            "time": "5:30 PM - 6:30 PM",
-            "days": "Mon / Wed / Fri",
-            "description": "Learn technique, build power, and relieve stress in the ring."
+            "name": "General Dentistry",
+            "icon": "\ud83e\uddb7",
+            "description": "Comprehensive cleanings, fillings, and preventive care to keep your oral health in peak condition year-round."
           },
           {
-            "name": "HIIT Blitz",
-            "icon": "🔥",
-            "time": "6:00 AM - 7:00 AM",
-            "days": "Mon / Wed / Fri",
-            "description": "High-intensity interval training to torch calories and build endurance."
+            "name": "Orthodontics",
+            "icon": "\u2728",
+            "description": "Invisalign clear aligners and modern braces for straighter teeth with discreet, comfortable treatment options."
           },
           {
-            "name": "Power Lifting",
-            "icon": "💪",
-            "time": "7:30 AM - 9:00 AM",
-            "days": "Tue / Thu / Sat",
-            "description": "Structured strength training focused on the big three lifts."
+            "name": "Dental Implants",
+            "icon": "\ud83c\udfe5",
+            "description": "Permanent, natural-looking tooth replacement solutions that restore function and confidence for a lifetime."
           },
           {
-            "name": "Zumba Dance",
-            "icon": "💃",
-            "time": "6:30 PM - 7:30 PM",
-            "days": "Tue / Thu",
-            "description": "Fun and energetic dance sessions to get your groove on."
+            "name": "Teeth Whitening",
+            "icon": "\u2b50",
+            "description": "Professional in-office and take-home whitening treatments for a dramatically brighter, more youthful smile."
           },
           {
-            "name": "Pilates Core",
-            "icon": "🧑‍🤝‍🧑",
-            "time": "7:00 PM - 8:00 PM",
-            "days": "Mon / Wed",
-            "description": "Strengthen and tone your core with focused Pilates techniques."
-          },
-          {
-            "name": "Spin Class",
-            "icon": "🚴",
-            "time": "8:00 AM - 9:00 AM",
-            "days": "Sat",
-            "description": "High-energy indoor cycling workout for cardio enthusiasts."
-          },
-          {
-            "name": "Body Pump",
-            "icon": "🏋️",
-            "time": "6:00 PM - 7:00 PM",
-            "days": "Fri",
-            "description": "Full-body workout using weights to build strength."
+            "name": "Pediatric Dentistry",
+            "icon": "\ud83d\udc76",
+            "description": "Gentle, patient care for children of all ages in a warm, welcoming environment they will actually enjoy."
           }
         ]
       }
@@ -134,28 +172,71 @@
       "id": "about",
       "type": "about",
       "visible": true,
+      "style": {
+        "layout": "split",
+        "animation": "fadeIn"
+      },
       "data": {
         "label": "Our Story",
-        "title": "About Us",
-        "description": "Located in the heart of Manhattan, Iron Forge Gym has been transforming lives since 2018. Our 15,000 sq ft facility features state-of-the-art equipment, expert trainers, and a community that pushes you to be your best. Whether you're a beginner or a seasoned athlete, Iron Forge is where champions are made.",
-        "ctaText": "Start Today",
-        "ctaLink": "#contact",
+        "title": "Where Science Meets Artistry",
+        "description": "Founded in 2010, Pearl Dental Studio was born from a simple belief: dental care should be an experience, not an ordeal. Our state-of-the-art Manhattan studio combines cutting-edge technology with a warm, spa-like atmosphere where every patient feels valued and at ease. Led by a team of board-certified specialists, we have transformed over 10,000 smiles with a commitment to precision, compassion, and lasting results.",
+        "ctaText": "Meet Our Team",
+        "ctaLink": "#team",
         "stats": [
+          { "value": "15+", "label": "Years of Excellence" },
+          { "value": "10K+", "label": "Smiles Transformed" },
+          { "value": "98%", "label": "Patient Satisfaction" },
+          { "value": "25+", "label": "Industry Awards" }
+        ]
+      }
+    },
+    {
+      "id": "cta-1",
+      "type": "cta_banner",
+      "visible": true,
+      "style": {
+        "layout": "gradient",
+        "animation": "fadeIn"
+      },
+      "data": {
+        "title": "Ready for a Healthier, Brighter Smile?",
+        "description": "New patients receive a complimentary consultation and comprehensive treatment plan. No obligation, just expert guidance.",
+        "ctaText": "Schedule Your Visit",
+        "ctaLink": "#contact"
+      }
+    },
+    {
+      "id": "team",
+      "type": "team",
+      "visible": true,
+      "style": {
+        "layout": "cards",
+        "animation": "fadeIn"
+      },
+      "data": {
+        "label": "Our Experts",
+        "title": "Meet Your Care Team",
+        "columns": 4,
+        "members": [
           {
-            "value": "500+",
-            "label": "Active Members"
+            "name": "Dr. Alexandra Chen",
+            "role": "Lead Cosmetic Dentist",
+            "bio": "NYU College of Dentistry graduate with 18 years specializing in aesthetic and restorative dentistry. Known for her meticulous eye for natural-looking results."
           },
           {
-            "value": "20+",
-            "label": "Expert Trainers"
+            "name": "Dr. Marcus Rivera",
+            "role": "Orthodontic Specialist",
+            "bio": "Board-certified orthodontist and Invisalign Diamond Provider. Passionate about creating beautiful, functional smiles for patients of every age."
           },
           {
-            "value": "15K",
-            "label": "Sq Ft Facility"
+            "name": "Dr. Sarah Ashton",
+            "role": "General & Family Dentistry",
+            "bio": "Columbia-trained dentist dedicated to preventive care and patient education. Specializes in gentle techniques for anxious patients."
           },
           {
-            "value": "5★",
-            "label": "Rating"
+            "name": "Dr. James Park",
+            "role": "Implant & Oral Surgery",
+            "bio": "Fellowship-trained oral surgeon with expertise in dental implants and bone grafting. Over 3,000 successful implant procedures performed."
           }
         ]
       }
@@ -164,24 +245,158 @@
       "id": "testimonials",
       "type": "testimonials",
       "visible": true,
+      "style": {
+        "layout": "large",
+        "animation": "fadeIn"
+      },
       "data": {
-        "label": "Community",
-        "title": "What Our Members Say",
+        "label": "Patient Stories",
+        "title": "What Our Patients Say",
         "items": [
           {
-            "name": "Sarah M.",
-            "text": "Iron Forge completely changed my fitness journey. The trainers actually care about your progress.",
-            "role": "Member since 2020"
+            "name": "Catherine L.",
+            "text": "I avoided the dentist for years due to anxiety. Pearl Dental completely changed my experience. Dr. Chen and her team made me feel safe and comfortable from the very first visit. My smile has never looked better.",
+            "role": "Cosmetic Patient",
+            "rating": 5
           },
           {
-            "name": "James K.",
-            "text": "Best gym in Manhattan, hands down. The community here is unmatched.",
-            "role": "Member since 2019"
+            "name": "Robert & Maria S.",
+            "text": "Our entire family has been going to Pearl Dental for five years. The pediatric care is outstanding and Dr. Ashton is incredible with our kids. We wouldn't trust anyone else.",
+            "role": "Family Patients",
+            "rating": 5
           },
           {
-            "name": "Diana R.",
-            "text": "I've tried every gym in the city. Iron Forge is the only one I've stuck with for over 3 years.",
-            "role": "Member since 2021"
+            "name": "David K.",
+            "text": "Dr. Park performed my dental implant procedure flawlessly. The 3D planning technology they use gave me total confidence. It looks and feels completely natural.",
+            "role": "Implant Patient",
+            "rating": 5
+          },
+          {
+            "name": "Jennifer W.",
+            "text": "The Invisalign treatment with Dr. Rivera was seamless from start to finish. Professional, efficient, and the results speak for themselves. Highly recommend.",
+            "role": "Orthodontic Patient",
+            "rating": 5
+          }
+        ]
+      }
+    },
+    {
+      "id": "pricing",
+      "type": "pricing",
+      "visible": true,
+      "style": {
+        "layout": "cards",
+        "animation": "slideUp"
+      },
+      "data": {
+        "label": "Investment in Your Smile",
+        "title": "Treatment Packages",
+        "plans": [
+          {
+            "name": "Essential Care",
+            "price": "$150",
+            "period": "per visit",
+            "features": [
+              "Comprehensive oral examination",
+              "Professional cleaning & polish",
+              "Digital X-rays included",
+              "Personalized hygiene plan",
+              "Fluoride treatment"
+            ],
+            "ctaText": "Book Now",
+            "ctaLink": "#contact"
+          },
+          {
+            "name": "Complete Wellness",
+            "price": "$89",
+            "period": "per month",
+            "popular": true,
+            "features": [
+              "Everything in Essential Care",
+              "Two cleanings per year",
+              "Emergency visits covered",
+              "15% off all procedures",
+              "Priority scheduling",
+              "Complimentary whitening touch-ups"
+            ],
+            "ctaText": "Get Started",
+            "ctaLink": "#contact"
+          },
+          {
+            "name": "Smile Transformation",
+            "price": "Custom",
+            "period": "tailored plan",
+            "features": [
+              "Full cosmetic consultation",
+              "Digital smile design preview",
+              "Veneers, implants, or aligners",
+              "Flexible financing options",
+              "Dedicated treatment coordinator",
+              "Lifetime warranty on restorations"
+            ],
+            "ctaText": "Free Consultation",
+            "ctaLink": "#contact"
+          }
+        ]
+      }
+    },
+    {
+      "id": "gallery",
+      "type": "gallery",
+      "visible": true,
+      "style": {
+        "layout": "grid",
+        "animation": "fadeIn"
+      },
+      "data": {
+        "label": "Step Inside",
+        "title": "Our Studio",
+        "columns": 3,
+        "items": [
+          { "icon": "\ud83c\udfe5", "caption": "Modern Reception" },
+          { "icon": "\ud83e\ude7a", "caption": "Treatment Suite" },
+          { "icon": "\ud83d\udcbb", "caption": "Digital Imaging Lab" },
+          { "icon": "\ud83e\uddb7", "caption": "Consultation Room" },
+          { "icon": "\u2615", "caption": "Patient Lounge" },
+          { "icon": "\ud83c\udf3f", "caption": "Recovery Space" }
+        ]
+      }
+    },
+    {
+      "id": "faq",
+      "type": "faq",
+      "visible": true,
+      "style": {
+        "layout": "two-column",
+        "animation": "fadeIn"
+      },
+      "data": {
+        "label": "Common Questions",
+        "title": "Frequently Asked Questions",
+        "items": [
+          {
+            "question": "Do you accept dental insurance?",
+            "answer": "Yes, we accept most major dental insurance plans and are in-network with Delta Dental, Aetna, Cigna, and MetLife. Our team will verify your benefits and maximize your coverage before any treatment begins."
+          },
+          {
+            "question": "What if I have dental anxiety?",
+            "answer": "We completely understand. Our studio is designed to feel more like a spa than a clinic. We offer nitrous oxide, oral sedation, and IV sedation options, along with noise-canceling headphones, weighted blankets, and aromatherapy."
+          },
+          {
+            "question": "How long does teeth whitening last?",
+            "answer": "Professional whitening results typically last 1-3 years depending on your diet and oral hygiene habits. Our Complete Wellness members receive complimentary whitening touch-ups to maintain their results."
+          },
+          {
+            "question": "Are dental implants painful?",
+            "answer": "Most patients report minimal discomfort during and after the procedure. We use advanced 3D-guided placement techniques and sedation options to ensure a comfortable experience. Recovery is typically 3-5 days."
+          },
+          {
+            "question": "Do you offer payment plans?",
+            "answer": "Absolutely. We partner with CareCredit and Lending Club to offer 0% interest financing for 12-24 months on qualifying treatments. We believe cost should never be a barrier to quality dental care."
+          },
+          {
+            "question": "How often should I visit the dentist?",
+            "answer": "We recommend professional cleanings and exams every six months for most patients. Those with gum disease or other conditions may benefit from more frequent visits. We will create a schedule tailored to your needs."
           }
         ]
       }
@@ -190,24 +405,25 @@
       "id": "contact",
       "type": "contact",
       "visible": true,
+      "style": {
+        "layout": "side-by-side",
+        "animation": "fadeIn"
+      },
       "data": {
-        "label": "Reach Us",
-        "title": "Get In Touch",
-        "address": "245 W 28th St, New York, NY 10001",
-        "phone": "8888888888",
-        "email": "hello@ironforge.gym",
-        "hours": "Mon-Fri: 5AM-11PM | Sat-Sun: 7AM-9PM"
+        "label": "Get in Touch",
+        "title": "Book Your Appointment",
+        "address": "485 Madison Avenue, Suite 1200, New York, NY 10022",
+        "phone": "(212) 555-0192",
+        "email": "hello@pearldental.com",
+        "hours": "Mon-Fri 8am-6pm, Sat 9am-2pm",
+        "submitText": "Request Appointment",
+        "formFields": [
+          { "name": "name", "label": "Full Name", "type": "text", "placeholder": "Your full name" },
+          { "name": "email", "label": "Email", "type": "email", "placeholder": "you@example.com" },
+          { "name": "phone", "label": "Phone", "type": "tel", "placeholder": "(555) 000-0000" },
+          { "name": "message", "label": "How Can We Help?", "type": "textarea", "placeholder": "Tell us about your dental needs or preferred appointment time..." }
+        ]
       }
     }
-  ],
-  "globalStyle": {
-    "cardStyle": "glass",
-    "borderRadius": "lg",
-    "sectionSpacing": "relaxed",
-    "animations": true
-  },
-  "typography": {
-    "headingFont": "Playfair Display",
-    "headingWeight": "black"
-  }
+  ]
 }
