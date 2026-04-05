@@ -24,16 +24,31 @@
     "ctaLink": "#contact",
     "logoText": "Pearl Dental",
     "links": [
-      { "label": "Services", "href": "#services" },
-      { "label": "About", "href": "#about" },
-      { "label": "Team", "href": "#team" },
-      { "label": "Pricing", "href": "#pricing" },
-      { "label": "Contact", "href": "#contact" }
+      {
+        "label": "Services",
+        "href": "#services"
+      },
+      {
+        "label": "About",
+        "href": "#about"
+      },
+      {
+        "label": "Team",
+        "href": "#team"
+      },
+      {
+        "label": "Pricing",
+        "href": "#pricing"
+      },
+      {
+        "label": "Contact",
+        "href": "#contact"
+      }
     ]
   },
   "footer": {
     "layout": "three-column",
-    "copyright": "\u00a9 2026 Pearl Dental Studio. All rights reserved.",
+    "copyright": "© 2026 Pearl Dental Studio. All rights reserved.",
     "columns": [
       {
         "type": "brand",
@@ -44,12 +59,30 @@
         "type": "links",
         "title": "Quick Links",
         "links": [
-          { "label": "Our Services", "href": "#services" },
-          { "label": "About Us", "href": "#about" },
-          { "label": "Meet the Team", "href": "#team" },
-          { "label": "Pricing", "href": "#pricing" },
-          { "label": "FAQ", "href": "#faq" },
-          { "label": "Contact", "href": "#contact" }
+          {
+            "label": "Our Services",
+            "href": "#services"
+          },
+          {
+            "label": "About Us",
+            "href": "#about"
+          },
+          {
+            "label": "Meet the Team",
+            "href": "#team"
+          },
+          {
+            "label": "Pricing",
+            "href": "#pricing"
+          },
+          {
+            "label": "FAQ",
+            "href": "#faq"
+          },
+          {
+            "label": "Contact",
+            "href": "#contact"
+          }
         ]
       },
       {
@@ -72,17 +105,29 @@
       },
       "data": {
         "badge": "Award-Winning Dental Care",
-        "headline": "Your Smile Our Masterpiece",
+        "headline": "Your Smile, Our Masterpiece in Blue",
         "subheadline": "Experience exceptional dentistry in a calm, luxurious setting. From routine check-ups to complete smile transformations, we bring artistry to every treatment.",
         "ctaText": "Book Your Visit",
         "ctaLink": "#contact",
         "secondaryCtaText": "Explore Services",
         "secondaryCtaLink": "#services",
         "stats": [
-          { "value": "15+", "label": "Years Experience" },
-          { "value": "10,000+", "label": "Happy Patients" },
-          { "value": "5\u2605", "label": "Google Rating" },
-          { "value": "12", "label": "Specialists" }
+          {
+            "value": "15+",
+            "label": "Years Experience"
+          },
+          {
+            "value": "10,000+",
+            "label": "Happy Patients"
+          },
+          {
+            "value": "5★",
+            "label": "Google Rating"
+          },
+          {
+            "value": "12",
+            "label": "Specialists"
+          }
         ]
       }
     },
@@ -101,22 +146,22 @@
         "columns": 4,
         "items": [
           {
-            "icon": "\ud83d\udd2c",
+            "icon": "🔬",
             "title": "Advanced Technology",
             "description": "Digital X-rays, 3D scanning, and laser dentistry for precise, comfortable treatments with faster healing."
           },
           {
-            "icon": "\ud83e\ude7a",
+            "icon": "🩺",
             "title": "Gentle Approach",
             "description": "Sedation options and a calming environment designed to ease dental anxiety for every patient."
           },
           {
-            "icon": "\u23f1\ufe0f",
+            "icon": "⏱️",
             "title": "Same-Day Solutions",
             "description": "From crowns to emergency care, many treatments completed in a single convenient visit."
           },
           {
-            "icon": "\u2728",
+            "icon": "✨",
             "title": "Personalized Care",
             "description": "Customized treatment plans tailored to your unique dental health goals and lifestyle."
           }
@@ -137,32 +182,32 @@
         "items": [
           {
             "name": "Cosmetic Dentistry",
-            "icon": "\ud83d\udc8e",
+            "icon": "💎",
             "description": "Veneers, bonding, and complete smile makeovers designed to give you the radiant, confident smile you deserve."
           },
           {
             "name": "General Dentistry",
-            "icon": "\ud83e\uddb7",
+            "icon": "🦷",
             "description": "Comprehensive cleanings, fillings, and preventive care to keep your oral health in peak condition year-round."
           },
           {
             "name": "Orthodontics",
-            "icon": "\u2728",
+            "icon": "✨",
             "description": "Invisalign clear aligners and modern braces for straighter teeth with discreet, comfortable treatment options."
           },
           {
             "name": "Dental Implants",
-            "icon": "\ud83c\udfe5",
+            "icon": "🏥",
             "description": "Permanent, natural-looking tooth replacement solutions that restore function and confidence for a lifetime."
           },
           {
             "name": "Teeth Whitening",
-            "icon": "\u2b50",
+            "icon": "⭐",
             "description": "Professional in-office and take-home whitening treatments for a dramatically brighter, more youthful smile."
           },
           {
             "name": "Pediatric Dentistry",
-            "icon": "\ud83d\udc76",
+            "icon": "👶",
             "description": "Gentle, patient care for children of all ages in a warm, welcoming environment they will actually enjoy."
           }
         ]
@@ -183,10 +228,22 @@
         "ctaText": "Meet Our Team",
         "ctaLink": "#team",
         "stats": [
-          { "value": "15+", "label": "Years of Excellence" },
-          { "value": "10K+", "label": "Smiles Transformed" },
-          { "value": "98%", "label": "Patient Satisfaction" },
-          { "value": "25+", "label": "Industry Awards" }
+          {
+            "value": "15+",
+            "label": "Years of Excellence"
+          },
+          {
+            "value": "10K+",
+            "label": "Smiles Transformed"
+          },
+          {
+            "value": "98%",
+            "label": "Patient Satisfaction"
+          },
+          {
+            "value": "25+",
+            "label": "Industry Awards"
+          }
         ]
       }
     },
@@ -353,12 +410,30 @@
         "title": "Our Studio",
         "columns": 3,
         "items": [
-          { "icon": "\ud83c\udfe5", "caption": "Modern Reception" },
-          { "icon": "\ud83e\ude7a", "caption": "Treatment Suite" },
-          { "icon": "\ud83d\udcbb", "caption": "Digital Imaging Lab" },
-          { "icon": "\ud83e\uddb7", "caption": "Consultation Room" },
-          { "icon": "\u2615", "caption": "Patient Lounge" },
-          { "icon": "\ud83c\udf3f", "caption": "Recovery Space" }
+          {
+            "icon": "🏥",
+            "caption": "Modern Reception"
+          },
+          {
+            "icon": "🩺",
+            "caption": "Treatment Suite"
+          },
+          {
+            "icon": "💻",
+            "caption": "Digital Imaging Lab"
+          },
+          {
+            "icon": "🦷",
+            "caption": "Consultation Room"
+          },
+          {
+            "icon": "☕",
+            "caption": "Patient Lounge"
+          },
+          {
+            "icon": "🌿",
+            "caption": "Recovery Space"
+          }
         ]
       }
     },
@@ -418,10 +493,30 @@
         "hours": "Mon-Fri 8am-6pm, Sat 9am-2pm",
         "submitText": "Request Appointment",
         "formFields": [
-          { "name": "name", "label": "Full Name", "type": "text", "placeholder": "Your full name" },
-          { "name": "email", "label": "Email", "type": "email", "placeholder": "you@example.com" },
-          { "name": "phone", "label": "Phone", "type": "tel", "placeholder": "(555) 000-0000" },
-          { "name": "message", "label": "How Can We Help?", "type": "textarea", "placeholder": "Tell us about your dental needs or preferred appointment time..." }
+          {
+            "name": "name",
+            "label": "Full Name",
+            "type": "text",
+            "placeholder": "Your full name"
+          },
+          {
+            "name": "email",
+            "label": "Email",
+            "type": "email",
+            "placeholder": "you@example.com"
+          },
+          {
+            "name": "phone",
+            "label": "Phone",
+            "type": "tel",
+            "placeholder": "(555) 000-0000"
+          },
+          {
+            "name": "message",
+            "label": "How Can We Help?",
+            "type": "textarea",
+            "placeholder": "Tell us about your dental needs or preferred appointment time..."
+          }
         ]
       }
     }
