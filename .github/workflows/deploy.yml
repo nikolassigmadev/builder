@@ -19,7 +19,8 @@ jobs:
           script: |
             export PATH="/opt/alt/alt-nodejs22/root/usr/bin:$PATH"
             cd ~/domains/lightgray-pelican-783022.hostingersite.com/public_html
-            git pull
+            git fetch origin
+            git reset --hard origin/main
             npm install
             npm run build
             mkdir -p tmp && touch tmp/restart.txt
