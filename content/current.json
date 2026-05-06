@@ -1,11 +1,11 @@
 {
   "siteTitle": "Best Dentist",
   "colors": {
-    "primary": "#f77f00",
-    "secondary": "#2d1b0e",
-    "accent": "#fcbf49",
-    "background": "#120500",
-    "text": "#fef3e2"
+    "primary": "#6a0dad",
+    "secondary": "#4b0082",
+    "accent": "#dda0dd",
+    "background": "#f3e5f5",
+    "text": "#301934"
   },
   "typography": {
     "headingFont": "Oswald",
