@@ -1,23 +1,20 @@
 {
   "siteTitle": "Best Dentist",
   "colors": {
-    "primary": "#1B6B93",
-    "secondary": "#EDF4F8",
-    "accent": "#D4A853",
-    "background": "#FFFFFF",
-    "text": "#1A2332"
+    "primary": "#f77f00",
+    "secondary": "#2d1b0e",
+    "accent": "#fcbf49",
+    "background": "#120500",
+    "text": "#fef3e2"
   },
   "typography": {
-    "headingFont": "Playfair Display",
-    "headingWeight": "bold"
+    "headingFont": "Oswald",
+    "headingWeight": "black"
   },
   "globalStyle": {
-    "borderRadius": "lg",
     "cardStyle": "elevated",
-    "maxWidth": "xl",
-    "sectionSpacing": "normal",
-    "animations": true,
-    "navStyle": "floating"
+    "borderRadius": "md",
+    "animations": true
   },
   "nav": {
     "ctaText": "Book Appointment",
