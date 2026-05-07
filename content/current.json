@@ -1,5 +1,5 @@
 {
-  "siteTitle": "Buy Now",
+  "siteTitle": "Sushi Deluxe",
   "colors": {
     "primary": "#6a0dad",
     "secondary": "#4b0082",
@@ -19,12 +19,12 @@
   "nav": {
     "ctaText": "",
     "ctaLink": "",
-    "logoText": "Buy Now",
+    "logoText": "Sushi Deluxe",
     "links": []
   },
   "footer": {
     "layout": "three-column",
-    "copyright": "© 2026 Pearl Dental Studio. All rights reserved.",
+    "copyright": "© 2026 Sushi Deluxe. All rights reserved.",
     "columns": []
   },
   "sections": [
@@ -37,7 +37,7 @@
         "animation": "fadeIn"
       },
       "data": {
-        "headline": "Buy Now"
+        "headline": "Experience the Art of Sushi"
       }
     }
   ]
