@@ -20,7 +20,8 @@
     "ctaText": "",
     "ctaLink": "",
     "logoText": "Sushi Deluxe",
-    "links": []
+    "links": [],
+    "logoImageUrl": "https://picsum.photos/seed/sushi%20restaurant%20logo-0/1200/800"
   },
   "footer": {
     "layout": "three-column",
@@ -37,7 +38,8 @@
         "animation": "fadeIn"
       },
       "data": {
-        "headline": "Experience the Art of Sushi"
+        "headline": "Experience the Art of Sushi",
+        "imageUrl": "https://picsum.photos/seed/sushi%20plate-0/1200/800"
       }
     }
   ]
