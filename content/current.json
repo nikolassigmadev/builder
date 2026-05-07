@@ -1,1 +1,44 @@
-{}
+{
+  "siteTitle": "Sushi Deluxe",
+  "colors": {
+    "primary": "#B22222",
+    "secondary": "#8B0000",
+    "accent": "#FF4500",
+    "background": "#f3e5f5",
+    "text": "#301934"
+  },
+  "typography": {
+    "headingFont": "Oswald",
+    "headingWeight": "black"
+  },
+  "globalStyle": {
+    "cardStyle": "elevated",
+    "borderRadius": "md",
+    "animations": true
+  },
+  "nav": {
+    "ctaText": "",
+    "ctaLink": "",
+    "logoText": "Sushi Deluxe",
+    "links": []
+  },
+  "footer": {
+    "layout": "three-column",
+    "copyright": "© 2026 Sushi Deluxe. All rights reserved.",
+    "columns": []
+  },
+  "sections": [
+    {
+      "id": "hero",
+      "type": "hero",
+      "visible": true,
+      "style": {
+        "layout": "centered",
+        "animation": "fadeIn"
+      },
+      "data": {
+        "headline": "Experience the Art of Sushi"
+      }
+    }
+  ]
+}
