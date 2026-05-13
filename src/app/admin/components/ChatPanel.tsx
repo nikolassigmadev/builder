@@ -41,11 +41,12 @@ What would you like to change?`,
 
 interface ChatPanelProps {
   onContentChanged?: () => void;
+  onSessionExpired?: () => void;
   className?: string;
   style?: React.CSSProperties;
 }
 
-export default function ChatPanel({ onContentChanged, className = "", style }: ChatPanelProps) {
+export default function ChatPanel({ onContentChanged, onSessionExpired, className = "", style }: ChatPanelProps) {
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
@@ -88,6 +89,10 @@ export default function ChatPanel({ onContentChanged, className = "", style }: C
         }),
       });
 
+      if (res.status === 401) {
+        onSessionExpired?.();
+        return;
+      }
       const data = await res.json();
       setMessages(prev => [...prev, { role: "assistant", content: data.response, timestamp: new Date() }]);
 

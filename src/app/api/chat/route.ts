@@ -1,8 +1,9 @@
 import OpenAI from "openai";
 import fs from "fs";
 import path from "path";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { isAuthenticated, unauthorized } from "@/lib/require-auth";
 
 const BUNDLED_CURRENT_PATH = path.join(process.cwd(), "content", "current.json");
 const TMP_DIR = "/tmp/content";
@@ -95,7 +96,9 @@ function getSnapshots() {
 
 function restoreSnapshot(filename: string): boolean {
   const { currentPath, historyDir } = getActivePaths();
-  const snapshotPath = path.join(historyDir, filename);
+  // Sanitize: strip any path components to prevent traversal (e.g. "../../etc/passwd")
+  const safeFilename = path.basename(filename);
+  const snapshotPath = path.join(historyDir, safeFilename);
   if (!fs.existsSync(snapshotPath)) return false;
   if (!fs.existsSync(historyDir)) fs.mkdirSync(historyDir, { recursive: true });
   const current = fs.existsSync(currentPath) ? fs.readFileSync(currentPath, "utf-8") : fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8");
@@ -599,7 +602,9 @@ When the user says something vague, translate it:
 
 // ── Route Handler ──────────────────────────────────────────────────
 
-export async function POST(req: Request) {
+export async function POST(req: NextRequest) {
+  if (!isAuthenticated(req)) return unauthorized();
+
   const { messages } = await req.json();
 
   const apiKey = process.env.OPENAI_API_KEY;

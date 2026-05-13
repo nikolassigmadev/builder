@@ -1,20 +1,28 @@
 "use client";
 
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import ChatPanel from "./components/ChatPanel";
 import PreviewPanel, { PreviewPanelRef } from "./components/PreviewPanel";
 
+type AuthState = "loading" | "unauthenticated" | "authenticated";
+
 export default function AdminPage() {
-  const [authenticated, setAuthenticated] = useState(false);
+  const [authState, setAuthState] = useState<AuthState>("loading");
   const [password, setPassword] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [activeTab, setActiveTab] = useState<"chat" | "preview">("chat");
 
-  // Split panel drag state
   const [splitRatio, setSplitRatio] = useState(0.42);
   const isDragging = useRef(false);
   const containerRef = useRef<HTMLDivElement>(null);
   const previewRef = useRef<PreviewPanelRef>(null);
+
+  // Check existing session on mount
+  useEffect(() => {
+    fetch("/api/auth")
+      .then(res => setAuthState(res.ok ? "authenticated" : "unauthenticated"))
+      .catch(() => setAuthState("unauthenticated"));
+  }, []);
 
   async function handleLogin(e: React.FormEvent) {
     e.preventDefault();
@@ -24,15 +32,27 @@ export default function AdminPage() {
       body: JSON.stringify({ password }),
     });
     if (res.ok) {
-      setAuthenticated(true);
+      setAuthState("authenticated");
       setPasswordError("");
+      setPassword("");
     } else {
-      setPasswordError("Wrong password");
+      const data = await res.json().catch(() => ({}));
+      setPasswordError(data.error ?? "Wrong password");
     }
+  }
+
+  async function handleLogout() {
+    await fetch("/api/auth", { method: "DELETE" });
+    setAuthState("unauthenticated");
   }
 
   const handleContentChanged = useCallback(() => {
     previewRef.current?.triggerAutoRefresh();
+  }, []);
+
+  // Called by child components when they receive a 401 — session expired
+  const handleSessionExpired = useCallback(() => {
+    setAuthState("unauthenticated");
   }, []);
 
   function handleDividerMouseDown(e: React.MouseEvent) {
@@ -60,7 +80,15 @@ export default function AdminPage() {
     window.addEventListener("mouseup", onUp);
   }
 
-  if (!authenticated) {
+  if (authState === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#09090b]">
+        <div className="w-6 h-6 border-2 border-[#e63946] border-t-transparent rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (authState === "unauthenticated") {
     return (
       <div className="min-h-screen flex items-center justify-center bg-[#09090b] px-6">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
@@ -139,16 +167,24 @@ export default function AdminPage() {
           </button>
         </div>
 
-        <a
-          href="/"
-          target="_blank"
-          className="hidden md:flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white transition-colors"
-        >
-          <span>Open site</span>
-          <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
-          </svg>
-        </a>
+        <div className="flex items-center gap-3">
+          <a
+            href="/"
+            target="_blank"
+            className="hidden md:flex items-center gap-1.5 text-xs text-zinc-500 hover:text-white transition-colors"
+          >
+            <span>Open site</span>
+            <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+            </svg>
+          </a>
+          <button
+            onClick={handleLogout}
+            className="text-xs text-zinc-500 hover:text-white transition-colors"
+          >
+            Sign out
+          </button>
+        </div>
       </div>
 
       {/* Mobile: single panel based on active tab */}
@@ -157,6 +193,7 @@ export default function AdminPage() {
           <ChatPanel
             className="flex-1"
             onContentChanged={handleContentChanged}
+            onSessionExpired={handleSessionExpired}
           />
         ) : (
           <PreviewPanel ref={previewRef} className="flex-1" />
@@ -168,11 +205,11 @@ export default function AdminPage() {
         ref={containerRef}
         className="hidden md:flex flex-1 overflow-hidden"
       >
-        {/* Chat panel */}
         <ChatPanel
           className="flex-shrink-0 overflow-hidden"
           style={{ width: `${splitRatio * 100}%` }}
           onContentChanged={handleContentChanged}
+          onSessionExpired={handleSessionExpired}
         />
 
         {/* Draggable divider */}
@@ -187,7 +224,6 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Preview panel */}
         <PreviewPanel
           ref={previewRef}
           className="flex-1 overflow-hidden"

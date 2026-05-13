@@ -1,7 +1,8 @@
 import fs from "fs";
 import path from "path";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
+import { isAuthenticated, unauthorized } from "@/lib/require-auth";
 
 const BUNDLED_CURRENT_PATH = path.join(process.cwd(), "content", "current.json");
 const TMP_DIR = "/tmp/content";
@@ -15,12 +16,14 @@ function getContent() {
   return JSON.parse(fs.readFileSync(BUNDLED_CURRENT_PATH, "utf-8"));
 }
 
-export async function GET() {
+export async function GET(req: NextRequest) {
+  if (!isAuthenticated(req)) return unauthorized();
   const content = getContent();
   return NextResponse.json(content);
 }
 
-export async function PUT(req: Request) {
+export async function PUT(req: NextRequest) {
+  if (!isAuthenticated(req)) return unauthorized();
   const newContent = await req.json();
 
   if (!fs.existsSync(TMP_HISTORY_DIR)) {
